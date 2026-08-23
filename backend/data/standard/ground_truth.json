@@ -1,0 +1,6806 @@
+{
+  "seed": 20260822,
+  "profile": "standard",
+  "case_count": 400,
+  "ledger_rows": 447,
+  "bank_rows": 409,
+  "cases_by_category": {
+    "clean_exact": 240,
+    "fee_deducted": 32,
+    "date_shift": 60,
+    "split_batch": 16,
+    "reference_typo": 16,
+    "orphan_bank": 4,
+    "orphan_ledger": 4,
+    "refund_reversal": 8,
+    "duplicate_ledger": 20
+  },
+  "cases": [
+    {
+      "case_id": "C0001",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00001",
+          "S00001"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0002",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00002",
+          "S00002"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 2455.34,
+        "fee": 72.43,
+        "rate": 0.0295,
+        "net": 2382.91
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0003",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00003",
+          "S00003"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0004",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00004",
+          "S00004"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0005",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00005",
+          "S00005"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0006",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00006",
+          "S00006"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0007",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00007",
+          "S00007"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0008",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00008",
+          "S00008"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0009",
+      "category": "split_batch",
+      "expected_links": [
+        [
+          "L00009",
+          "S00009"
+        ],
+        [
+          "L00009",
+          "S00010"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "direction": "one_ledger_to_many_bank",
+        "n": 2,
+        "gross": 27893.28
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0010",
+      "category": "reference_typo",
+      "expected_links": [
+        [
+          "L00010",
+          "S00011"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "ledger_ref": "pay_TqBzgTGSk6DHpF",
+        "bank_ref": "pay_qTBzgTGSk6DHpF",
+        "corruption": "transpose"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0011",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00011",
+          "S00012"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 2434.05,
+        "fee": 57.44,
+        "rate": 0.0236,
+        "net": 2376.61
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0012",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00012",
+          "S00013"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0013",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00013",
+          "S00014"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0014",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00014",
+          "S00015"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0015",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00015",
+          "S00016"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0016",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00016",
+          "S00017"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0017",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00017",
+          "S00018"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0018",
+      "category": "orphan_bank",
+      "expected_links": [],
+      "duplicate_ids": [],
+      "unresolved_ids": [
+        "S00019"
+      ],
+      "detail": {
+        "flavour": "misc_fee"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0019",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00018",
+          "S00020"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0020",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00019",
+          "S00021"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0021",
+      "category": "reference_typo",
+      "expected_links": [
+        [
+          "L00020",
+          "S00022"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "ledger_ref": "pay_epdjcbrCiuGjcG",
+        "bank_ref": "pay_epdjcbrCiuGjGc",
+        "corruption": "transpose"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0022",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00021",
+          "S00023"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0023",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00022",
+          "S00024"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0024",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00023",
+          "S00025"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0025",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00024",
+          "S00026"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 1181.39,
+        "fee": 13.94,
+        "rate": 0.0118,
+        "net": 1167.45
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0026",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00025",
+          "S00027"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0027",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00026",
+          "S00028"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0028",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00027",
+          "S00029"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0029",
+      "category": "reference_typo",
+      "expected_links": [
+        [
+          "L00028",
+          "S00030"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "ledger_ref": "pay_0dJfi1LWjAteXb",
+        "bank_ref": "pay_0dJfi1LWj",
+        "corruption": "truncate"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0030",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00029",
+          "S00031"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0031",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00030",
+          "S00032"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0032",
+      "category": "split_batch",
+      "expected_links": [
+        [
+          "L00031",
+          "S00033"
+        ],
+        [
+          "L00032",
+          "S00033"
+        ],
+        [
+          "L00033",
+          "S00033"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "direction": "many_ledger_to_one_bank",
+        "n": 3,
+        "gross": 12333.93,
+        "fee": 291.08,
+        "rate": 0.0236
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0033",
+      "category": "split_batch",
+      "expected_links": [
+        [
+          "L00034",
+          "S00034"
+        ],
+        [
+          "L00035",
+          "S00034"
+        ],
+        [
+          "L00036",
+          "S00034"
+        ],
+        [
+          "L00037",
+          "S00034"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "direction": "many_ledger_to_one_bank",
+        "n": 4,
+        "gross": 16969.77,
+        "fee": 0.0,
+        "rate": 0.0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0034",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00038",
+          "S00035"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0035",
+      "category": "orphan_ledger",
+      "expected_links": [],
+      "duplicate_ids": [],
+      "unresolved_ids": [
+        "L00039"
+      ],
+      "detail": {
+        "ledger_status": "captured"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0036",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00040",
+          "S00036"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0037",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00041",
+          "S00037"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0038",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00042",
+          "S00038"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0039",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00043",
+          "S00039"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0040",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00044",
+          "S00040"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0041",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00045",
+          "S00041"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0042",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00046",
+          "S00042"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0043",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00047",
+          "S00043"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0044",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00048",
+          "S00044"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0045",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00049",
+          "S00045"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0046",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00050",
+          "S00046"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0047",
+      "category": "reference_typo",
+      "expected_links": [
+        [
+          "L00051",
+          "S00047"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "ledger_ref": "pay_ZMVqk0SBs2T5Bj",
+        "bank_ref": "pay_ZMVqk05Bs2T5Bj",
+        "corruption": "substitute"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0048",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00052",
+          "S00048"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0049",
+      "category": "orphan_ledger",
+      "expected_links": [],
+      "duplicate_ids": [],
+      "unresolved_ids": [
+        "L00053"
+      ],
+      "detail": {
+        "ledger_status": "captured"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0050",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00054",
+          "S00049"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0051",
+      "category": "refund_reversal",
+      "expected_links": [
+        [
+          "L00055",
+          "S00050"
+        ],
+        [
+          "L00056",
+          "S00051"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "payment_ref": "pay_WrZGkDXTPbfpU8",
+        "refund_ref": "pay_WrZGkDXTPbfpU8-RFD",
+        "gap_days": 3,
+        "amount": 4639.29
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0052",
+      "category": "reference_typo",
+      "expected_links": [
+        [
+          "L00057",
+          "S00052"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "ledger_ref": "pay_mJEMs9Foxsss6z",
+        "bank_ref": "pay_mJEMs9F",
+        "corruption": "truncate"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0053",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00058",
+          "S00053"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0054",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00059",
+          "S00054"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0055",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00060",
+          "S00055"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0056",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00061",
+          "S00056"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0057",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00062",
+          "S00057"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 1704.81,
+        "fee": 50.29,
+        "rate": 0.0295,
+        "net": 1654.52
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0058",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00063",
+          "S00058"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0059",
+      "category": "split_batch",
+      "expected_links": [
+        [
+          "L00064",
+          "S00059"
+        ],
+        [
+          "L00065",
+          "S00059"
+        ],
+        [
+          "L00066",
+          "S00059"
+        ],
+        [
+          "L00067",
+          "S00059"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "direction": "many_ledger_to_one_bank",
+        "n": 4,
+        "gross": 25890.55,
+        "fee": 0.0,
+        "rate": 0.0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0060",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00068",
+          "S00060"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0061",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00069",
+          "S00061"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0062",
+      "category": "reference_typo",
+      "expected_links": [
+        [
+          "L00070",
+          "S00062"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "ledger_ref": "pay_QXF5kpeiapTk5f",
+        "bank_ref": "QXF5kpeiap",
+        "corruption": "prefix_lost"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0063",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00071",
+          "S00063"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0064",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00072",
+          "S00064"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0065",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00073",
+          "S00065"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00074"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00073",
+        "duplicate": "L00074"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0066",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00075",
+          "S00066"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0067",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00076",
+          "S00067"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00077"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00076",
+        "duplicate": "L00077"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0068",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00078",
+          "S00068"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0069",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00079",
+          "S00069"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0070",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00080",
+          "S00070"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0071",
+      "category": "reference_typo",
+      "expected_links": [
+        [
+          "L00081",
+          "S00071"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "ledger_ref": "pay_iOXB2OEKYIqMuE",
+        "bank_ref": "pay_iOXB2OEKIYqMuE",
+        "corruption": "transpose"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0072",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00082",
+          "S00072"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0073",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00083",
+          "S00073"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0074",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00084",
+          "S00074"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0075",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00085",
+          "S00075"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0076",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00086",
+          "S00076"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0077",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00087",
+          "S00077"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0078",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00088",
+          "S00078"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0079",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00089",
+          "S00079"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0080",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00090",
+          "S00080"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0081",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00091",
+          "S00081"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0082",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00092",
+          "S00082"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0083",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00093",
+          "S00083"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 663.67,
+        "fee": 19.58,
+        "rate": 0.0295,
+        "net": 644.09
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0084",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00094",
+          "S00084"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0085",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00095",
+          "S00085"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0086",
+      "category": "split_batch",
+      "expected_links": [
+        [
+          "L00096",
+          "S00086"
+        ],
+        [
+          "L00097",
+          "S00086"
+        ],
+        [
+          "L00098",
+          "S00086"
+        ],
+        [
+          "L00099",
+          "S00086"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "direction": "many_ledger_to_one_bank",
+        "n": 4,
+        "gross": 23225.19,
+        "fee": 0.0,
+        "rate": 0.0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0087",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00100",
+          "S00087"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0088",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00101",
+          "S00088"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00102"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00101",
+        "duplicate": "L00102"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0089",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00103",
+          "S00089"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0090",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00104",
+          "S00090"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0091",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00105",
+          "S00091"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0092",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00106",
+          "S00092"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0093",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00107",
+          "S00093"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0094",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00108",
+          "S00094"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0095",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00109",
+          "S00095"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0096",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00110",
+          "S00096"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 1909.96,
+        "fee": 56.34,
+        "rate": 0.0295,
+        "net": 1853.62
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0097",
+      "category": "refund_reversal",
+      "expected_links": [
+        [
+          "L00111",
+          "S00097"
+        ],
+        [
+          "L00112",
+          "S00098"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "payment_ref": "pay_ZUXqakkNziTqSq",
+        "refund_ref": "pay_ZUXqakkNziTqSq-RFD",
+        "gap_days": 6,
+        "amount": 6523.73
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0098",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00113",
+          "S00099"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 4238.85,
+        "fee": 125.05,
+        "rate": 0.0295,
+        "net": 4113.8
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0099",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00114",
+          "S00100"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 9354.64,
+        "fee": 220.77,
+        "rate": 0.0236,
+        "net": 9133.87
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0100",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00115",
+          "S00101"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 59156.76,
+        "fee": 1745.12,
+        "rate": 0.0295,
+        "net": 57411.64
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0101",
+      "category": "reference_typo",
+      "expected_links": [
+        [
+          "L00116",
+          "S00102"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "ledger_ref": "pay_lGJzOeXLkQBfQg",
+        "bank_ref": "pay_lGJzOeXVkQBfQg",
+        "corruption": "substitute"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0102",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00117",
+          "S00103"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0103",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00118",
+          "S00104"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0104",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00119",
+          "S00105"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0105",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00120",
+          "S00106"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0106",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00121",
+          "S00107"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0107",
+      "category": "split_batch",
+      "expected_links": [
+        [
+          "L00122",
+          "S00108"
+        ],
+        [
+          "L00122",
+          "S00109"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "direction": "one_ledger_to_many_bank",
+        "n": 2,
+        "gross": 46051.09
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0108",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00123",
+          "S00110"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0109",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00124",
+          "S00111"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 2936.37,
+        "fee": 86.62,
+        "rate": 0.0295,
+        "net": 2849.75
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0110",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00125",
+          "S00112"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00126"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00125",
+        "duplicate": "L00126"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0111",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00127",
+          "S00113"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0112",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00128",
+          "S00114"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0113",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00129",
+          "S00115"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0114",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00130",
+          "S00116"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 3890.01,
+        "fee": 45.9,
+        "rate": 0.0118,
+        "net": 3844.11
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0115",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00131",
+          "S00117"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0116",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00132",
+          "S00118"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0117",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00133",
+          "S00119"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00134"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00133",
+        "duplicate": "L00134"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0118",
+      "category": "refund_reversal",
+      "expected_links": [
+        [
+          "L00135",
+          "S00120"
+        ],
+        [
+          "L00136",
+          "S00121"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "payment_ref": "pay_18TDJlToIvvFdO",
+        "refund_ref": "pay_18TDJlToIvvFdO-RFD",
+        "gap_days": 9,
+        "amount": 3163.25
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0119",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00137",
+          "S00122"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0120",
+      "category": "refund_reversal",
+      "expected_links": [
+        [
+          "L00138",
+          "S00123"
+        ],
+        [
+          "L00139",
+          "S00124"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "payment_ref": "pay_lrrtn3S20oEwF0",
+        "refund_ref": "pay_lrrtn3S20oEwF0-RFD",
+        "gap_days": 9,
+        "amount": 616.49
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0121",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00140",
+          "S00125"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0122",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00141",
+          "S00126"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0123",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00142",
+          "S00127"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0124",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00143",
+          "S00128"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0125",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00144",
+          "S00129"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0126",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00145",
+          "S00130"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0127",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00146",
+          "S00131"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0128",
+      "category": "reference_typo",
+      "expected_links": [
+        [
+          "L00147",
+          "S00132"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "ledger_ref": "pay_Ts0kSCF9kbVcoV",
+        "bank_ref": "pay_Ts0kSCF",
+        "corruption": "truncate"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0129",
+      "category": "reference_typo",
+      "expected_links": [
+        [
+          "L00148",
+          "S00133"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "ledger_ref": "pay_fuT5zaluhZTXtc",
+        "bank_ref": "fuT5zaluh",
+        "corruption": "prefix_lost"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0130",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00149",
+          "S00134"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0131",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00150",
+          "S00135"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0132",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00151",
+          "S00136"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0133",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00152",
+          "S00137"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0134",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00153",
+          "S00138"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0135",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00154",
+          "S00139"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0136",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00155",
+          "S00140"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0137",
+      "category": "reference_typo",
+      "expected_links": [
+        [
+          "L00156",
+          "S00141"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "ledger_ref": "pay_xVUag3DtEPzOvy",
+        "bank_ref": "pay_xVUag3DtEPzvy",
+        "corruption": "drop_char"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0138",
+      "category": "orphan_bank",
+      "expected_links": [],
+      "duplicate_ids": [],
+      "unresolved_ids": [
+        "S00142"
+      ],
+      "detail": {
+        "flavour": "misc_fee"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0139",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00157",
+          "S00143"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0140",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00158",
+          "S00144"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0141",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00159",
+          "S00145"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0142",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00160",
+          "S00146"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00161"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00160",
+        "duplicate": "L00161"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0143",
+      "category": "reference_typo",
+      "expected_links": [
+        [
+          "L00162",
+          "S00147"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "ledger_ref": "pay_fRXaSBu4KdfWd2",
+        "bank_ref": "pay_RXaSBu4KdfWd2",
+        "corruption": "drop_char"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0144",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00163",
+          "S00148"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0145",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00164",
+          "S00149"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0146",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00165",
+          "S00150"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0147",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00166",
+          "S00151"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 2106.04,
+        "fee": 62.13,
+        "rate": 0.0295,
+        "net": 2043.91
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0148",
+      "category": "refund_reversal",
+      "expected_links": [
+        [
+          "L00167",
+          "S00152"
+        ],
+        [
+          "L00168",
+          "S00153"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "payment_ref": "pay_cuDXOmpt0DqXtB",
+        "refund_ref": "pay_cuDXOmpt0DqXtB-RFD",
+        "gap_days": 3,
+        "amount": 19262.24
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0149",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00169",
+          "S00154"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0150",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00170",
+          "S00155"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00171"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00170",
+        "duplicate": "L00171"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0151",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00172",
+          "S00156"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0152",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00173",
+          "S00157"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0153",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00174",
+          "S00158"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0154",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00175",
+          "S00159"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0155",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00176",
+          "S00160"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0156",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00177",
+          "S00161"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 4255.25,
+        "fee": 50.21,
+        "rate": 0.0118,
+        "net": 4205.04
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0157",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00178",
+          "S00162"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0158",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00179",
+          "S00163"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0159",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00180",
+          "S00164"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 3229.86,
+        "fee": 38.11,
+        "rate": 0.0118,
+        "net": 3191.75
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0160",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00181",
+          "S00165"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0161",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00182",
+          "S00166"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0162",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00183",
+          "S00167"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0163",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00184",
+          "S00168"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0164",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00185",
+          "S00169"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0165",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00186",
+          "S00170"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0166",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00187",
+          "S00171"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 5486.72,
+        "fee": 64.74,
+        "rate": 0.0118,
+        "net": 5421.98
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0167",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00188",
+          "S00172"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 1607.87,
+        "fee": 47.43,
+        "rate": 0.0295,
+        "net": 1560.44
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0168",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00189",
+          "S00173"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0169",
+      "category": "split_batch",
+      "expected_links": [
+        [
+          "L00190",
+          "S00174"
+        ],
+        [
+          "L00191",
+          "S00174"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "direction": "many_ledger_to_one_bank",
+        "n": 2,
+        "gross": 4830.52,
+        "fee": 0.0,
+        "rate": 0.0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0170",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00192",
+          "S00175"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0171",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00193",
+          "S00176"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0172",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00194",
+          "S00177"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00195"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00194",
+        "duplicate": "L00195"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0173",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00196",
+          "S00178"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0174",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00197",
+          "S00179"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0175",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00198",
+          "S00180"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0176",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00199",
+          "S00181"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0177",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00200",
+          "S00182"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0178",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00201",
+          "S00183"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0179",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00202",
+          "S00184"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0180",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00203",
+          "S00185"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0181",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00204",
+          "S00186"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00205"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00204",
+        "duplicate": "L00205"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0182",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00206",
+          "S00187"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0183",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00207",
+          "S00188"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0184",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00208",
+          "S00189"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0185",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00209",
+          "S00190"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0186",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00210",
+          "S00191"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0187",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00211",
+          "S00192"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0188",
+      "category": "split_batch",
+      "expected_links": [
+        [
+          "L00212",
+          "S00193"
+        ],
+        [
+          "L00213",
+          "S00193"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "direction": "many_ledger_to_one_bank",
+        "n": 2,
+        "gross": 16603.54,
+        "fee": 489.8,
+        "rate": 0.0295
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0189",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00214",
+          "S00194"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0190",
+      "category": "split_batch",
+      "expected_links": [
+        [
+          "L00215",
+          "S00195"
+        ],
+        [
+          "L00216",
+          "S00195"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "direction": "many_ledger_to_one_bank",
+        "n": 2,
+        "gross": 4919.71,
+        "fee": 145.13,
+        "rate": 0.0295
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0191",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00217",
+          "S00196"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0192",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00218",
+          "S00197"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0193",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00219",
+          "S00198"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0194",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00220",
+          "S00199"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0195",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00221",
+          "S00200"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0196",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00222",
+          "S00201"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00223"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00222",
+        "duplicate": "L00223"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0197",
+      "category": "reference_typo",
+      "expected_links": [
+        [
+          "L00224",
+          "S00202"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "ledger_ref": "pay_PFSrhnjn5jbDfL",
+        "bank_ref": "pay_PFSrhnjn5jDbfL",
+        "corruption": "transpose"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0198",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00225",
+          "S00203"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0199",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00226",
+          "S00204"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0200",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00227",
+          "S00205"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 47304.44,
+        "fee": 1116.38,
+        "rate": 0.0236,
+        "net": 46188.06
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0201",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00228",
+          "S00206"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0202",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00229",
+          "S00207"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00230"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00229",
+        "duplicate": "L00230"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0203",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00231",
+          "S00208"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0204",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00232",
+          "S00209"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0205",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00233",
+          "S00210"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0206",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00234",
+          "S00211"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0207",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00235",
+          "S00212"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0208",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00236",
+          "S00213"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0209",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00237",
+          "S00214"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0210",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00238",
+          "S00215"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00239"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00238",
+        "duplicate": "L00239"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0211",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00240",
+          "S00216"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0212",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00241",
+          "S00217"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0213",
+      "category": "reference_typo",
+      "expected_links": [
+        [
+          "L00242",
+          "S00218"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "ledger_ref": "pay_QC2k4s0jfB3A2j",
+        "bank_ref": "QC2k4s0jfB3",
+        "corruption": "prefix_lost"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0214",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00243",
+          "S00219"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 2925.49,
+        "fee": 69.04,
+        "rate": 0.0236,
+        "net": 2856.45
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0215",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00244",
+          "S00220"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0216",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00245",
+          "S00221"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0217",
+      "category": "reference_typo",
+      "expected_links": [
+        [
+          "L00246",
+          "S00222"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "ledger_ref": "pay_3j94i7L27GANw4",
+        "bank_ref": "3j94i7L27GA",
+        "corruption": "prefix_lost"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0218",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00247",
+          "S00223"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0219",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00248",
+          "S00224"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0220",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00249",
+          "S00225"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0221",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00250",
+          "S00226"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0222",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00251",
+          "S00227"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0223",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00252",
+          "S00228"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0224",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00253",
+          "S00229"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0225",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00254",
+          "S00230"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0226",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00255",
+          "S00231"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0227",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00256",
+          "S00232"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0228",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00257",
+          "S00233"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0229",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00258",
+          "S00234"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0230",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00259",
+          "S00235"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0231",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00260",
+          "S00236"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 2882.21,
+        "fee": 34.01,
+        "rate": 0.0118,
+        "net": 2848.2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0232",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00261",
+          "S00237"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0233",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00262",
+          "S00238"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0234",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00263",
+          "S00239"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0235",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00264",
+          "S00240"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0236",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00265",
+          "S00241"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0237",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00266",
+          "S00242"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0238",
+      "category": "orphan_bank",
+      "expected_links": [],
+      "duplicate_ids": [],
+      "unresolved_ids": [
+        "S00243"
+      ],
+      "detail": {
+        "flavour": "unknown_credit"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0239",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00267",
+          "S00244"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0240",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00268",
+          "S00245"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0241",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00269",
+          "S00246"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0242",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00270",
+          "S00247"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0243",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00271",
+          "S00248"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0244",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00272",
+          "S00249"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0245",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00273",
+          "S00250"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0246",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00274",
+          "S00251"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0247",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00275",
+          "S00252"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0248",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00276",
+          "S00253"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0249",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00277",
+          "S00254"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00278"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00277",
+        "duplicate": "L00278"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0250",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00279",
+          "S00255"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0251",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00280",
+          "S00256"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0252",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00281",
+          "S00257"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0253",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00282",
+          "S00258"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0254",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00283",
+          "S00259"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0255",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00284",
+          "S00260"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0256",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00285",
+          "S00261"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 942.76,
+        "fee": 11.12,
+        "rate": 0.0118,
+        "net": 931.64
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0257",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00286",
+          "S00262"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0258",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00287",
+          "S00263"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0259",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00288",
+          "S00264"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0260",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00289",
+          "S00265"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0261",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00290",
+          "S00266"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0262",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00291",
+          "S00267"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 26303.67,
+        "fee": 775.96,
+        "rate": 0.0295,
+        "net": 25527.71
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0263",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00292",
+          "S00268"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 6636.86,
+        "fee": 156.63,
+        "rate": 0.0236,
+        "net": 6480.23
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0264",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00293",
+          "S00269"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0265",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00294",
+          "S00270"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 1233.02,
+        "fee": 29.1,
+        "rate": 0.0236,
+        "net": 1203.92
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0266",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00295",
+          "S00271"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0267",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00296",
+          "S00272"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0268",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00297",
+          "S00273"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0269",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00298",
+          "S00274"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0270",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00299",
+          "S00275"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0271",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00300",
+          "S00276"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0272",
+      "category": "reference_typo",
+      "expected_links": [
+        [
+          "L00301",
+          "S00277"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "ledger_ref": "pay_M006OfYI7mAaXo",
+        "bank_ref": "pay_M006OfY",
+        "corruption": "truncate"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0273",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00302",
+          "S00278"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0274",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00303",
+          "S00279"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0275",
+      "category": "split_batch",
+      "expected_links": [
+        [
+          "L00304",
+          "S00280"
+        ],
+        [
+          "L00305",
+          "S00280"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "direction": "many_ledger_to_one_bank",
+        "n": 2,
+        "gross": 16040.78,
+        "fee": 378.56,
+        "rate": 0.0236
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0276",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00306",
+          "S00281"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0277",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00307",
+          "S00282"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0278",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00308",
+          "S00283"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0279",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00309",
+          "S00284"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0280",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00310",
+          "S00285"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0281",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00311",
+          "S00286"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0282",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00312",
+          "S00287"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0283",
+      "category": "refund_reversal",
+      "expected_links": [
+        [
+          "L00313",
+          "S00288"
+        ],
+        [
+          "L00314",
+          "S00289"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "payment_ref": "pay_SAVdwmhHKYjW8t",
+        "refund_ref": "pay_SAVdwmhHKYjW8t-RFD",
+        "gap_days": 3,
+        "amount": 14592.35
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0284",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00315",
+          "S00290"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0285",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00316",
+          "S00291"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0286",
+      "category": "orphan_ledger",
+      "expected_links": [],
+      "duplicate_ids": [],
+      "unresolved_ids": [
+        "L00317"
+      ],
+      "detail": {
+        "ledger_status": "captured"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0287",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00318",
+          "S00292"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0288",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00319",
+          "S00293"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0289",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00320",
+          "S00294"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0290",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00321",
+          "S00295"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0291",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00322",
+          "S00296"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0292",
+      "category": "refund_reversal",
+      "expected_links": [
+        [
+          "L00323",
+          "S00297"
+        ],
+        [
+          "L00324",
+          "S00298"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "payment_ref": "pay_nBCN6vpnvjNnRj",
+        "refund_ref": "pay_nBCN6vpnvjNnRj-RFD",
+        "gap_days": 5,
+        "amount": 1914.28
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0293",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00325",
+          "S00299"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00326"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00325",
+        "duplicate": "L00326"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0294",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00327",
+          "S00300"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0295",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00328",
+          "S00301"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0296",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00329",
+          "S00302"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0297",
+      "category": "split_batch",
+      "expected_links": [
+        [
+          "L00330",
+          "S00303"
+        ],
+        [
+          "L00330",
+          "S00304"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "direction": "one_ledger_to_many_bank",
+        "n": 2,
+        "gross": 26004.49
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0298",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00331",
+          "S00305"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0299",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00332",
+          "S00306"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0300",
+      "category": "split_batch",
+      "expected_links": [
+        [
+          "L00333",
+          "S00307"
+        ],
+        [
+          "L00334",
+          "S00307"
+        ],
+        [
+          "L00335",
+          "S00307"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "direction": "many_ledger_to_one_bank",
+        "n": 3,
+        "gross": 10055.43,
+        "fee": 0.0,
+        "rate": 0.0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0301",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00336",
+          "S00308"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0302",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00337",
+          "S00309"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0303",
+      "category": "split_batch",
+      "expected_links": [
+        [
+          "L00338",
+          "S00310"
+        ],
+        [
+          "L00339",
+          "S00310"
+        ],
+        [
+          "L00340",
+          "S00310"
+        ],
+        [
+          "L00341",
+          "S00310"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "direction": "many_ledger_to_one_bank",
+        "n": 4,
+        "gross": 9396.02,
+        "fee": 221.75,
+        "rate": 0.0236
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0304",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00342",
+          "S00311"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0305",
+      "category": "split_batch",
+      "expected_links": [
+        [
+          "L00343",
+          "S00312"
+        ],
+        [
+          "L00344",
+          "S00312"
+        ],
+        [
+          "L00345",
+          "S00312"
+        ],
+        [
+          "L00346",
+          "S00312"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "direction": "many_ledger_to_one_bank",
+        "n": 4,
+        "gross": 34507.49,
+        "fee": 407.19,
+        "rate": 0.0118
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0306",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00347",
+          "S00313"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00348"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00347",
+        "duplicate": "L00348"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0307",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00349",
+          "S00314"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0308",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00350",
+          "S00315"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0309",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00351",
+          "S00316"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0310",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00352",
+          "S00317"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0311",
+      "category": "split_batch",
+      "expected_links": [
+        [
+          "L00353",
+          "S00318"
+        ],
+        [
+          "L00353",
+          "S00319"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "direction": "one_ledger_to_many_bank",
+        "n": 2,
+        "gross": 51105.87
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0312",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00354",
+          "S00320"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0313",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00355",
+          "S00321"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0314",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00356",
+          "S00322"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0315",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00357",
+          "S00323"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0316",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00358",
+          "S00324"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 2385.95,
+        "fee": 28.15,
+        "rate": 0.0118,
+        "net": 2357.8
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0317",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00359",
+          "S00325"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0318",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00360",
+          "S00326"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00361"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00360",
+        "duplicate": "L00361"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0319",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00362",
+          "S00327"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0320",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00363",
+          "S00328"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0321",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00364",
+          "S00329"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0322",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00365",
+          "S00330"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0323",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00366",
+          "S00331"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0324",
+      "category": "refund_reversal",
+      "expected_links": [
+        [
+          "L00367",
+          "S00332"
+        ],
+        [
+          "L00368",
+          "S00333"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "payment_ref": "pay_HLvZU2NaNhVHjm",
+        "refund_ref": "pay_HLvZU2NaNhVHjm-RFD",
+        "gap_days": 2,
+        "amount": 13552.96
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0325",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00369",
+          "S00334"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0326",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00370",
+          "S00335"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 485.62,
+        "fee": 14.33,
+        "rate": 0.0295,
+        "net": 471.29
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0327",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00371",
+          "S00336"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0328",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00372",
+          "S00337"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0329",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00373",
+          "S00338"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00374"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00373",
+        "duplicate": "L00374"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0330",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00375",
+          "S00339"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0331",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00376",
+          "S00340"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0332",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00377",
+          "S00341"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0333",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00378",
+          "S00342"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0334",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00379",
+          "S00343"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 7884.63,
+        "fee": 93.04,
+        "rate": 0.0118,
+        "net": 7791.59
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0335",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00380",
+          "S00344"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0336",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00381",
+          "S00345"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0337",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00382",
+          "S00346"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00383"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00382",
+        "duplicate": "L00383"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0338",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00384",
+          "S00347"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0339",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00385",
+          "S00348"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0340",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00386",
+          "S00349"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0341",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00387",
+          "S00350"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0342",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00388",
+          "S00351"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0343",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00389",
+          "S00352"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0344",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00390",
+          "S00353"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0345",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00391",
+          "S00354"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0346",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00392",
+          "S00355"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0347",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00393",
+          "S00356"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0348",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00394",
+          "S00357"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0349",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00395",
+          "S00358"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0350",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00396",
+          "S00359"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0351",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00397",
+          "S00360"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0352",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00398",
+          "S00361"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0353",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00399",
+          "S00362"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0354",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00400",
+          "S00363"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0355",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00401",
+          "S00364"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0356",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00402",
+          "S00365"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0357",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00403",
+          "S00366"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0358",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00404",
+          "S00367"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0359",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00405",
+          "S00368"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0360",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00406",
+          "S00369"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0361",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00407",
+          "S00370"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0362",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00408",
+          "S00371"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 6703.95,
+        "fee": 79.11,
+        "rate": 0.0118,
+        "net": 6624.84
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0363",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00409",
+          "S00372"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0364",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00410",
+          "S00373"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0365",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00411",
+          "S00374"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 9168.19,
+        "fee": 108.18,
+        "rate": 0.0118,
+        "net": 9060.01
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0366",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00412",
+          "S00375"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0367",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00413",
+          "S00376"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0368",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00414",
+          "S00377"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0369",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00415",
+          "S00378"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0370",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00416",
+          "S00379"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0371",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00417",
+          "S00380"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0372",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00418",
+          "S00381"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0373",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00419",
+          "S00382"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0374",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00420",
+          "S00383"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00421"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00420",
+        "duplicate": "L00421"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0375",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00422",
+          "S00384"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0376",
+      "category": "orphan_ledger",
+      "expected_links": [],
+      "duplicate_ids": [],
+      "unresolved_ids": [
+        "L00423"
+      ],
+      "detail": {
+        "ledger_status": "captured"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0377",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00424",
+          "S00385"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0378",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00425",
+          "S00386"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 3145.09,
+        "fee": 74.22,
+        "rate": 0.0236,
+        "net": 3070.87
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0379",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00426",
+          "S00387"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0380",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00427",
+          "S00388"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0381",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00428",
+          "S00389"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0382",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00429",
+          "S00390"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 4164.44,
+        "fee": 98.28,
+        "rate": 0.0236,
+        "net": 4066.16
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0383",
+      "category": "duplicate_ledger",
+      "expected_links": [
+        [
+          "L00430",
+          "S00391"
+        ]
+      ],
+      "duplicate_ids": [
+        "L00431"
+      ],
+      "unresolved_ids": [],
+      "detail": {
+        "kept": "L00430",
+        "duplicate": "L00431"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0384",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00432",
+          "S00392"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 14297.95,
+        "fee": 337.43,
+        "rate": 0.0236,
+        "net": 13960.52
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0385",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00433",
+          "S00393"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 2
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0386",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00434",
+          "S00394"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0387",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00435",
+          "S00395"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0388",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00436",
+          "S00396"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0389",
+      "category": "fee_deducted",
+      "expected_links": [
+        [
+          "L00437",
+          "S00397"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "gross": 31969.67,
+        "fee": 943.11,
+        "rate": 0.0295,
+        "net": 31026.56
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0390",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00438",
+          "S00398"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0391",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00439",
+          "S00399"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0392",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00440",
+          "S00400"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0393",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00441",
+          "S00401"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0394",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00442",
+          "S00402"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0395",
+      "category": "split_batch",
+      "expected_links": [
+        [
+          "L00443",
+          "S00403"
+        ],
+        [
+          "L00443",
+          "S00404"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "direction": "one_ledger_to_many_bank",
+        "n": 2,
+        "gross": 28035.93
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0396",
+      "category": "orphan_bank",
+      "expected_links": [],
+      "duplicate_ids": [],
+      "unresolved_ids": [
+        "S00405"
+      ],
+      "detail": {
+        "flavour": "chargeback"
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0397",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00444",
+          "S00406"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0398",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00445",
+          "S00407"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 0
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0399",
+      "category": "clean_exact",
+      "expected_links": [
+        [
+          "L00446",
+          "S00408"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 1
+      },
+      "require_human": false
+    },
+    {
+      "case_id": "C0400",
+      "category": "date_shift",
+      "expected_links": [
+        [
+          "L00447",
+          "S00409"
+        ]
+      ],
+      "duplicate_ids": [],
+      "unresolved_ids": [],
+      "detail": {
+        "day_shift": 3
+      },
+      "require_human": false
+    }
+  ]
+}

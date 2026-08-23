@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Design tokens.
+
+   The subject is an audit desk: money that has to be accounted for exactly.
+   The surface is modelled on green-bar continuous-form ledger paper - the
+   alternating pale stripe that accounting stock has been printed on for
+   decades - which is why the neutrals run cool green-grey rather than warm
+   cream, and why every figure on screen is set in a monospace face with
+   tabular figures so digits stack in columns.
+
+   Deliberately not: cream + serif + terracotta, near-black + neon, a
+   broadsheet hairline grid, or an indigo-to-purple SaaS gradient.
+   ========================================================================== */
+@theme {
+  /* neutrals */
+  --color-field: #e7ebe6;
+  --color-sheet: #f7f9f5;
+  --color-bar: #dfe6db;
+  --color-rule: #c3cdbf;
+  --color-ink: #16211e;
+  --color-slate: #5c6b64;
+  --color-mute: #8b978f;
+
+  /* states - semantic, never decorative */
+  --color-pine: #1d6b57;
+  --color-pine-soft: #d8e6df;
+  --color-ochre: #a06c12;
+  --color-ochre-soft: #f0e5cd;
+  --color-oxblood: #97382f;
+  --color-oxblood-soft: #f2dcd9;
+
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Consolas, "Liberation Mono", monospace;
+  --font-cond: "IBM Plex Sans Condensed", "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sheet: 3px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-field);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Every number in this app is tabular. Ledger columns that don't align are
+   the single most common tell of a dashboard built by someone who has never
+   had to tie out a statement. */
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "zero" 1;
+  letter-spacing: -0.01em;
+}
+
+.label {
+  font-family: var(--font-cond);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-slate);
+}
+
+.sheet {
+  background: var(--color-sheet);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-sheet);
+}
+
+/* the green-bar stripe */
+.greenbar > *:nth-child(even) {
+  background: color-mix(in srgb, var(--color-bar) 55%, transparent);
+}
+
+/* Scroll shadows.
+
+   A table that scrolls sideways inside its own box is the right answer on a
+   narrow screen, but with no edge cue it just looks like a table with the last
+   column chopped off. These two gradients are painted with
+   `background-attachment: local, scroll` - the pair only shows where there is
+   actually more content in that direction, so the hint appears and disappears
+   on its own with no scroll listener. */
+.scroll-x {
+  overflow-x: auto;
+  background-image:
+    linear-gradient(to right, var(--color-sheet), transparent 12px),
+    linear-gradient(to left, var(--color-sheet), transparent 12px),
+    linear-gradient(to right, rgba(22, 33, 30, 0.14), transparent 9px),
+    linear-gradient(to left, rgba(22, 33, 30, 0.14), transparent 9px);
+  background-position: 0 0, 100% 0, 0 0, 100% 0;
+  background-repeat: no-repeat;
+  background-size: 22px 100%, 22px 100%, 9px 100%, 9px 100%;
+  background-attachment: local, local, scroll, scroll;
+}
+
+::selection {
+  background: var(--color-pine);
+  color: var(--color-sheet);
+}
+
+/* Scrollbars, sized for a dense worksheet rather than left at browser default */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-rule) transparent;
+}
+*::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--color-rule);
+  border-radius: 5px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--color-mute);
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
