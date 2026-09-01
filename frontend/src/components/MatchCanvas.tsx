@@ -3,32 +3,13 @@ import { motion } from 'framer-motion'
 import type { AnyRecord, BankRecord, LedgerRecord, Link } from '../lib/api'
 import { money, shortDate } from '../lib/format'
 
-/* ==========================================================================
-   The two lists, and the lines the engine actually drew between them.
-
-   Nothing here is decorative. Every line is one link the engine committed,
-   coloured by the pass that found it and positioned by the real row index of
-   both records. Both columns are date-sorted, so a healthy run reads as a
-   near-diagonal weave - and the rows with NO line are the exceptions, which
-   is the whole point of looking at it.
-   ========================================================================== */
 
 const ROW_H = 18
 
-/* Column geometry.
-
-   The gutter between the two columns is where the lines live, so it has to
-   survive every viewport. The old rule was `colW = max(180, width * 0.42)`,
-   which inverts below ~360px: leftX lands to the right of rightX and every
-   link draws backwards across the page. Clamping the column against the
-   available half-width instead means the gutter shrinks but never crosses. */
 const MIN_GUTTER = 44
 const MIN_COL = 116
 const COL_SHARE = 0.42
 
-/** A row shows id, date and amount. Under this width the date is dropped
- *  rather than letting three columns crush the amount into an ellipsis - the
- *  amount is the one you actually scan for. */
 const DATE_MIN_COL = 168
 
 function geometry(width: number) {
@@ -58,7 +39,6 @@ type Props = {
   ledger: LedgerRecord[]
   bank: BankRecord[]
   links: Link[]
-  /** Only draw links found by these passes. Drives the processing sequence. */
   visiblePasses?: Set<string> | null
   height?: number
   selectedIds?: Set<string>
@@ -147,8 +127,6 @@ export function MatchCanvas({
     <div className="relative">
       <div className="flex items-end justify-between gap-2 border-b border-rule px-3 pb-1.5">
         <div className="label truncate">Ledger · {ledger.length}</div>
-        {/* The pair count is the first thing to go when there is no room -
-            both column heads carry more information than it does. */}
         <div className="label hidden shrink-0 sm:block">{paths.length} pairs drawn</div>
         <div className="label truncate text-right">Statement · {bank.length}</div>
       </div>
@@ -159,7 +137,6 @@ export function MatchCanvas({
         style={{ height }}
       >
         <div className="relative" style={{ height: contentHeight }}>
-          {/* lines sit behind the rows */}
           <svg
             className="pointer-events-none absolute inset-0"
             width={width}
@@ -185,7 +162,6 @@ export function MatchCanvas({
             ))}
           </svg>
 
-          {/* ledger column */}
           <div className="absolute left-0 top-0" style={{ width: colW }}>
             {ledger.map((r, i) => (
               <Row
@@ -208,7 +184,6 @@ export function MatchCanvas({
             ))}
           </div>
 
-          {/* bank column */}
           <div className="absolute right-0 top-0" style={{ width: colW }}>
             {bank.map((r, i) => (
               <Row

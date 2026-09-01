@@ -1,12 +1,3 @@
-"""Verify Groq before trusting it in a demo.
-
-Checks, in order: the key loads, the live model list comes back, our preferred
-model is actually on it, and a real structured-output call returns valid JSON.
-
-    python scripts/check_groq.py
-    python scripts/check_groq.py --list      # just print every model Groq serves
-"""
-
 from __future__ import annotations
 
 import argparse
@@ -16,7 +7,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from app import llm  # noqa: E402
+from app import llm
 
 SAMPLE = {
     "exception_id": "EX_SELFTEST",
@@ -59,7 +50,7 @@ def main() -> int:
 
     try:
         available = llm.list_models()
-    except Exception as exc:                          # noqa: BLE001
+    except Exception as exc:
         print("  [FAIL] could not reach Groq: %s" % str(exc)[:200])
         return 1
     print("  [ ok ] Groq is serving %d models" % len(available))
@@ -71,7 +62,7 @@ def main() -> int:
 
     try:
         model = llm.resolve_model(force=True)
-    except Exception as exc:                          # noqa: BLE001
+    except Exception as exc:
         print("  [FAIL] %s" % str(exc)[:300])
         return 1
 

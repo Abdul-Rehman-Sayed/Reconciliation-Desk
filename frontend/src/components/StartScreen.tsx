@@ -129,15 +129,6 @@ export function StartScreen({ onStart, error }: Props) {
   )
 }
 
-/**
- * Standard / Adversarial, as a segmented control.
- *
- * It drives the same `chosen` state the cards below it do rather than holding
- * its own - two controls for one value that each remember it separately is how
- * you end up running the set the user did not pick. The cards stay because they
- * carry the flaw mix; this is for someone who already knows which one they want
- * and does not want to read two paragraphs to switch.
- */
 function DatasetToggle({
   value,
   onChange,
@@ -205,7 +196,6 @@ function DatasetCard({
         <h3 className="text-[15px] font-semibold">
           {isStress ? 'Adversarial' : 'Standard'}
         </h3>
-        <span className="num text-[10px] text-mute">seed {info.seed}</span>
       </div>
       <p className="mt-1 text-[12px] leading-snug text-slate">
         {isStress

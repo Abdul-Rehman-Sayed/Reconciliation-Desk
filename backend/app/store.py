@@ -1,9 +1,3 @@
-"""One JSON file per run under data/runs/.
-
-Deliberately not a database. It survives a backend restart mid-demo, which is the
-only durability requirement here, and it costs about forty lines.
-"""
-
 from __future__ import annotations
 
 import json
@@ -74,16 +68,6 @@ def list_runs(limit: int = 25) -> list[dict[str, Any]]:
 
 
 def find_by_fingerprint(fingerprint: str) -> dict[str, Any] | None:
-    """The most recent run over identical inputs at identical thresholds.
-
-    The engine is deterministic, so an identical fingerprint means an identical
-    reconciliation. Returning the stored one is not a cache trick, it is
-    declining to compute a value we already hold - and it carries the LLM
-    verdicts with it, so a re-run costs neither CPU nor tokens.
-
-    Prefers a run that has already been explained: two runs can share a
-    fingerprint if one was forced, and the explained one is strictly more useful.
-    """
     if not fingerprint or not RUNS_DIR.exists():
         return None
     candidates: list[tuple[bool, float, dict[str, Any]]] = []

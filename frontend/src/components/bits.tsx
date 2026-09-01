@@ -3,8 +3,6 @@ import { motion } from 'framer-motion'
 import type { Tone } from '../lib/format'
 import { toneClasses } from '../lib/format'
 
-/* --------------------------------------------------------------- CountUp */
-/** Counts to a real value. Used only on figures the engine actually computed. */
 export function CountUp({
   value,
   format,
@@ -34,7 +32,6 @@ export function CountUp({
         return
       }
       const p = Math.min(1, elapsed / duration)
-      // ease-out cubic: fast settle, no bounce - this is a readout, not a toy
       setShown(value * (1 - Math.pow(1 - p, 3)))
       if (p < 1) raf.current = requestAnimationFrame(tick)
       else setShown(value)
@@ -46,7 +43,6 @@ export function CountUp({
   return <>{format(shown)}</>
 }
 
-/* ------------------------------------------------------------------- Tag */
 export function Tag({
   tone = 'slate',
   children,
@@ -68,9 +64,6 @@ export function Tag({
   )
 }
 
-/* ----------------------------------------------------------------- Meter */
-/** A confidence readout. Ticked at 0.6 and 0.85 - the thresholds that decide
- *  whether the engine auto-resolves or asks a person. */
 export function Meter({ value, tone }: { value: number; tone: Tone }) {
   const t = toneClasses[tone]
   return (
@@ -91,7 +84,6 @@ export function Meter({ value, tone }: { value: number; tone: Tone }) {
   )
 }
 
-/* ------------------------------------------------------------------ Stat */
 export function Stat({
   label,
   children,
@@ -110,7 +102,6 @@ export function Stat({
     xl: 'text-[clamp(38px,11vw,58px)] leading-[0.95]',
   }
   return (
-    // min-w-0 so a long figure shrinks rather than widening its grid column.
     <div className="min-w-0">
       <div className="label">{label}</div>
       <div className={`num mt-1 font-medium ${sizes[size]}`}>{children}</div>
@@ -119,7 +110,6 @@ export function Stat({
   )
 }
 
-/* ---------------------------------------------------------------- Panel */
 export function Panel({
   title,
   right,
@@ -132,12 +122,6 @@ export function Panel({
   className?: string
 }) {
   return (
-    // min-w-0 is load-bearing. A grid or flex item defaults to `min-width:auto`,
-    // meaning it refuses to shrink below its content - so one wide table inside
-    // a panel pushes the panel past its column and the whole page scrolls
-    // sideways, even though the table has its own scroll container. Panels are
-    // laid out in grids all over this app, so the fix belongs here rather than
-    // at each call site.
     <section className={`sheet min-w-0 ${className}`}>
       {(title || right) && (
         <header className="flex items-center justify-between border-b border-rule px-3 py-2">
@@ -150,23 +134,6 @@ export function Panel({
   )
 }
 
-/* ----------------------------------------------------------- SidePanel */
-/**
- * The detail shell used by the exception and provenance panels.
- *
- * Two different things depending on room:
- *
- *   lg and up   a sticky column beside the list, which is what you want when
- *               you are comparing a detail against the rows around it
- *   below lg    a bottom drawer over a backdrop
- *
- * The drawer matters more than it looks. Stacked in the flow, a detail panel
- * lands *below* twenty rows of list - you tap a row and the thing you asked
- * for is off-screen, so it reads as nothing having happened.
- *
- * Escape closes it, the backdrop closes it, and while the drawer is open the
- * body cannot scroll underneath it.
- */
 export function SidePanel({
   onClose,
   label,
@@ -184,8 +151,6 @@ export function SidePanel({
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
 
-  // Only lock the body while the drawer is actually covering it. At lg the
-  // panel is an ordinary column and locking would strand the reader.
   useEffect(() => {
     const drawer = window.matchMedia('(max-width: 1023px)')
     if (!drawer.matches) return
@@ -223,7 +188,6 @@ export function SidePanel({
   )
 }
 
-/* ------------------------------------------------------------- Skeleton */
 export function Pulse({ className = '' }: { className?: string }) {
   return (
     <motion.div

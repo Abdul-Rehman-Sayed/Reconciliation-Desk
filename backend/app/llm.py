@@ -1,58 +1,3 @@
-"""
-Groq exception handler.
-
-This module only ever sees what six deterministic passes could not resolve on
-their own. It never sees a clean match, and on the bundled dataset it is asked
-about roughly 8% of the records rather than all 856 of them.
-
-Three rules the rest of the system depends on:
-
-  1. Structured output only. The model is given a JSON schema and its reply is
-     validated before anything downstream touches it. Nothing is regexed out of prose.
-  2. It classifies and explains. It never resolves. Its `suggested_action` is a
-     suggestion sitting in a queue waiting for a person.
-  3. When there is genuinely no counterpart, it has to say so. The prompt makes
-     "there is nothing to match this to" a first-class answer, because inventing a
-     match for an orphan is the single most damaging thing it could do here.
-
--------------------------------------------------------------------------------
-Token discipline
--------------------------------------------------------------------------------
-The free tier is a token bucket, not a daily allowance, and the bucket is what
-this module is built around. Measured off the live response headers on this
-account (see scripts/check_limits.py, which reads them rather than trusting the
-docs):
-
-    openai/gpt-oss-20b     1,000 requests/day    8,000 tokens/minute
-    groq/compound-mini       250 requests/day   70,000 tokens/minute
-    allam-2-7b             7,000 requests/day    6,000 tokens/minute
-
-The first version of this file sent one request per five exceptions, three at a
-time, with max_tokens=2000. Groq reserves max_tokens against the token bucket at
-admission, so three concurrent calls asked for 3 x (1,060 prompt + 2,000
-reserved) = 9,180 tokens against a bucket of 8,000. Four of seven calls came
-back 429. The completion length was never the problem - the reservation was.
-
-So, in order of how much each one actually saved:
-
-  1. Cache on disk, keyed by a hash of the exact fields sent. After the bundled
-     dataset has been run once, every later run is free. This is what makes it
-     safe to rehearse a demo thirty times.
-  2. A client-side token bucket that mirrors Groq's own. Requests wait for
-     capacity here rather than being rejected there. A 429 costs a request out
-     of the daily allowance and returns nothing; waiting 400ms costs nothing.
-  3. Batch 12 exceptions per request instead of 5, cutting request count ~2.5x
-     against the daily ceiling.
-  4. Send only the fields a verdict actually turns on, as compact JSON. Cut the
-     per-exception payload from ~210 tokens to ~70.
-  5. max_tokens budgeted per record rather than per request, so the reservation
-     tracks the work asked for.
-  6. A hard daily call budget, tracked on disk, that refuses to call at all past
-     a ceiling you set. Belt and braces for a live demo.
-
-And USE_MOCK_LLM=true for all UI work, which skips the network entirely.
-"""
-
 from __future__ import annotations
 
 import hashlib
@@ -73,11 +18,7 @@ load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 GROQ_BASE = "https://api.groq.com/openai/v1"
 
-# Tried in order against the live model list; the first one actually available wins.
-# Groq's free lineup changes, so nothing here is hardcoded as a hard requirement.
-# gpt-oss-20b leads because on this account it carries 1,000 requests/day against
-# compound-mini's 250, and classification at this difficulty does not need the
-# larger model. Run scripts/check_limits.py to re-measure before changing the order.
+
 MODEL_PREFERENCE = [
     "openai/gpt-oss-20b",
     "openai/gpt-oss-120b",
@@ -88,64 +29,28 @@ MODEL_PREFERENCE = [
     "gemma2-9b-it",
 ]
 
-# 12 exceptions per request. The whole standard dataset is 32 exceptions, so a
-# cold run is 3 requests. Above ~15 the model starts dropping rows from the
-# array; below ~8 the fixed system prompt stops amortising.
+
 BATCH_SIZE = 12
 
-# One request at a time. The bucket refills at limit/60 tokens per second, so
-# concurrency buys nothing here except 429s - two parallel calls simply drain the
-# same bucket twice as fast and then both wait. Serial with a bucket in front is
-# both faster end to end and cheaper in requests.
+
 MAX_WORKERS = 1
 
 REQUEST_TIMEOUT = 60
 MAX_RETRIES = 3
 
-# Budgeted per record, not per request, because the request holds N records -
-# plus a flat allowance for the reasoning pass that happens before the first
-# character of the answer is written.
-#
-# gpt-oss models think before they answer. Those reasoning tokens are billed as
-# completion tokens and are drawn from max_tokens like any other, so a budget
-# sized only for the visible answer leaves the model no room to reach it.
-# Measured on the heaviest real payload rather than the lightest: a batch of 12
-# composite_candidate exceptions, the ones that carry a full evidence dict, spent
-# 366 tokens reasoning and 909 writing the answer - 1,275 completion tokens for
-# 12 records, or ~76 per record on top of a reasoning pass that scales with how
-# tangled the batch is. A single simple record is ~96 reasoning and ~240 total.
-# Size for the expensive case: the cheap one is not what breaks.
-#
-# The previous numbers (70/record, floor 200, ceiling 900) were calibrated on a
-# non-reasoning model and had no such allowance, which produced two distinct
-# failures. A single record got max_tokens=200, spent ~96 of it reasoning, and
-# came back 400 json_validate_failed. A batch of 12 got 900, ran out mid-array,
-# and came back 200 OK carrying 9 rows for 12 records - the 3 missing ones were
-# then marked unavailable downstream as though the model had declined them.
-# The margin here is deliberate. Reasoning length varies run to run on identical
-# input, and the failure when it overruns is not a shorter answer - it is a 400
-# with an empty failed_generation, because Groq validates the truncated JSON and
-# finds nothing. An earlier pass at 1,470 for a batch of 12 sat only 15% above
-# the observed 1,275 and failed every time. These leave ~50%.
+
 REASONING_HEADROOM = 600
 MAX_TOKENS_PER_RECORD = 110
 MAX_TOKENS_FLOOR = 400
 MAX_TOKENS_CEILING = 3000
 
-# Measured against real prompt_tokens rather than assumed: 5,798 characters of
-# system prompt plus compacted JSON was billed as 2,140 prompt tokens, or 2.71
-# chars/token. The previous 3.6 was a prose-shaped ratio and undercounted this
-# payload by ~30%, which is why a run could report bucket_wait_ms=0.0 while Groq
-# returned 12 rate-limit errors: the local bucket believed it had headroom it did
-# not have, so it never paced anything. 2.5 keeps the error on the safe side.
+
 CHARS_PER_TOKEN = 2.5
 
-# Assumed bucket size when a model has not told us its own yet. Replaced by the
-# real value from x-ratelimit-limit-tokens on the first response.
+
 DEFAULT_TPM = 8000
 
-# Refuse to make more than this many live calls in a day, whatever else happens.
-# Set GROQ_DAILY_CALL_BUDGET=0 to block live calls entirely.
+
 DAILY_CALL_BUDGET = int(os.getenv("GROQ_DAILY_CALL_BUDGET", "120"))
 
 CATEGORIES = [
@@ -155,19 +60,15 @@ CATEGORIES = [
 ACTIONS = ["approve", "reject", "investigate"]
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
-# Two caches, never one. A templated mock answer written into the real cache
-# would be served silently on the next live run and never re-asked - the flag
-# meant for saving quota would quietly become the thing that fakes the demo.
-# Separate files make switching modes switch the whole body of answers with it.
+
+
 CACHE_PATH = DATA_DIR / "llm_cache.json"
 MOCK_CACHE_PATH = DATA_DIR / "llm_cache_mock.json"
 BUDGET_PATH = DATA_DIR / "llm_budget.json"
 _cache_lock = threading.Lock()
 _budget_lock = threading.Lock()
 
-# Bump this when the prompt or the payload shape changes in a way that would
-# make an old cached answer wrong. It is part of the cache key, so bumping it
-# invalidates the cache deliberately rather than by accident.
+
 PROMPT_VERSION = "v2"
 
 RESULT_SCHEMA = {
@@ -193,10 +94,7 @@ RESULT_SCHEMA = {
     "additionalProperties": False,
 }
 
-# Short and fixed. The previous version re-explained the whole domain on every
-# call at ~450 tokens; batched 12-up that was 450 tokens of overhead per 12
-# records instead of per 5, but it was still 450 tokens of the same paragraph
-# every time. This says the same things in a third of the space.
+
 SYSTEM_PROMPT = (
     "You are a reconciliation analyst on an Indian payments desk. Amounts are INR.\n"
     "A deterministic engine already resolved everything it could prove. You see only "
@@ -212,8 +110,7 @@ SYSTEM_PROMPT = (
     "Return one object per id given, and nothing else."
 )
 
-# Compact field names on the wire. Sent hundreds of times; spelled out in
-# _compact()'s docstring so nothing is lost by shortening them here.
+
 _FIELD_DOC = (
     "Fields: k=engine finding, n=engine note, c=engine confidence, "
     "L=ledger rows, B=bank rows, e=evidence. Rows are [id,date,amount,reference,party]."
@@ -225,21 +122,13 @@ class LLMUnavailable(RuntimeError):
 
 
 class _SchemaUnsupported(RuntimeError):
-    """This model will not take a json_schema response_format. Fall back to json_object."""
+    pass
 
 
 class _NeedsSmallerBatch(RuntimeError):
-    """The answer did not survive the request - truncated, malformed, or schema-invalid.
-
-    Not a dead batch. Every cause of this gets better with fewer records in the
-    request, so the caller halves it and retries rather than writing the whole
-    batch off as unavailable.
-    """
+    pass
 
 
-# --------------------------------------------------------------------------
-# Mode
-# --------------------------------------------------------------------------
 def use_mock() -> bool:
     return os.getenv("USE_MOCK_LLM", "").strip().lower() in ("1", "true", "yes", "on")
 
@@ -249,9 +138,6 @@ def api_key() -> str | None:
     return key or None
 
 
-# --------------------------------------------------------------------------
-# Model discovery
-# --------------------------------------------------------------------------
 def list_models() -> list[str]:
     key = api_key()
     if not key:
@@ -269,7 +155,6 @@ _resolved_model: str | None = None
 
 
 def resolve_model(force: bool = False) -> str:
-    """Ask Groq what it actually serves today, then take our first preference from it."""
     global _resolved_model
     if use_mock():
         return mockllm.MODEL_NAME
@@ -300,23 +185,17 @@ def resolve_model(force: bool = False) -> str:
     return _resolved_model
 
 
-# --------------------------------------------------------------------------
-# Payload compaction
-# --------------------------------------------------------------------------
 def _row(rec: dict[str, Any]) -> list[Any]:
-    """One record as a positional list. Named fields cost ~4x this in tokens."""
     party = rec.get("counterparty") or rec.get("narration") or ""
     return [
         rec.get("id"),
-        str(rec.get("date", ""))[5:],          # drop the year, every row shares it
+        str(rec.get("date", ""))[5:],
         round(float(rec.get("amount", 0) or 0), 2),
         (rec.get("reference_number") or "")[:24],
         str(party)[:38],
     ]
 
 
-# Evidence keys that actually change a verdict. Everything else the engine
-# gathers is for the interface and the audit log, not for the model.
 _EVIDENCE_KEYS = (
     "amount_delta", "day_delta", "ref_similarity", "fee_rate", "fee_amount",
     "known_rate", "shortfall", "shortfall_pct", "amount_discrepancy", "contested",
@@ -328,16 +207,12 @@ _EVIDENCE_KEYS = (
 
 def _compact_evidence(evidence: dict[str, Any] | None) -> dict[str, Any]:
     ev = dict(evidence or {})
-    # `ev[k] not in (None, False, "")` would be wrong here: 0.0 == False in
-    # Python, so an amount_delta of exactly zero - "the amounts agree to the
-    # paisa", one of the more decisive facts on the page - would be dropped.
+
     out = {
         k: ev[k] for k in _EVIDENCE_KEYS
         if k in ev and ev[k] is not None and ev[k] is not False and ev[k] != ""
     }
 
-    # The nearest-candidate block is the whole point of an orphan exception - it
-    # is the evidence that nothing fits - but the full record is wasteful.
     nearest = ev.get("nearest_on_other_side")
     if isinstance(nearest, dict) and nearest.get("record"):
         out["near"] = _row(nearest["record"]) + [
@@ -349,13 +224,6 @@ def _compact_evidence(evidence: dict[str, Any] | None) -> dict[str, Any]:
 
 
 def compact_payload(exception: dict[str, Any], lookup: dict[str, Any]) -> dict[str, Any]:
-    """The exact object that gets hashed for the cache key and sent to the model.
-
-    Deliberately not the exception as stored. The stored exception carries ids,
-    status, timestamps, link ids and the full evidence dict - none of which
-    change what the verdict should be, and all of which would churn the cache
-    key. What is here is what a verdict actually turns on.
-    """
     return {
         "k": exception["kind"],
         "n": (exception.get("engine_note") or "")[:260],
@@ -367,7 +235,6 @@ def compact_payload(exception: dict[str, Any], lookup: dict[str, Any]) -> dict[s
 
 
 def _mock_payload(compact: dict[str, Any]) -> dict[str, Any]:
-    """Re-expand a compact payload into what mockllm.classify expects."""
     def rows(items: list[list[Any]], side: str) -> list[dict[str, Any]]:
         out = []
         for r in items:
@@ -393,9 +260,6 @@ def _mock_payload(compact: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-# --------------------------------------------------------------------------
-# Cache
-# --------------------------------------------------------------------------
 def cache_path() -> Path:
     return MOCK_CACHE_PATH if use_mock() else CACHE_PATH
 
@@ -408,9 +272,6 @@ def _load_cache() -> dict[str, Any]:
         loaded = json.loads(path.read_text(encoding="utf-8"))
         return loaded if isinstance(loaded, dict) else {}
     except json.JSONDecodeError:
-        # A cache that will not parse is still a cache somebody paid for. Moving
-        # it aside rather than returning {} means the next save cannot quietly
-        # overwrite it with a fresh empty one, and the bytes stay recoverable.
         try:
             path.replace(path.with_suffix(".corrupt.json"))
         except OSError:
@@ -421,17 +282,6 @@ def _load_cache() -> dict[str, Any]:
 
 
 def _save_cache(cache: dict[str, Any]) -> None:
-    """Merge into whatever is on disk. Never replace it wholesale.
-
-    The caller holds the entries it happens to have looked at this run, which is
-    almost never the whole file. Writing that view directly makes every save a
-    potential truncation - and this file holds verdicts that cost real quota, is
-    committed to the repo, and is what makes a rehearsal free. One process
-    holding a partial view must not be able to destroy it.
-
-    Learned the hard way: a test that stubbed _load_cache to return {} and left
-    _save_cache alone emptied the real cache on the next call.
-    """
     path = cache_path()
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -445,14 +295,6 @@ def _save_cache(cache: dict[str, Any]) -> None:
 
 
 def fingerprint(compact: dict[str, Any]) -> str:
-    """Hash of exactly the bytes that go into the prompt, plus the prompt version.
-
-    Deliberately not keyed on the model. An explanation of a fee deduction does
-    not become wrong because the account switched from gpt-oss-20b to 120b, and
-    keying on the model would throw the whole cache away the day Groq retires
-    one. Which model produced a given verdict is recorded inside the value, so
-    provenance survives without the cache paying for it.
-    """
     blob = json.dumps(compact, sort_keys=True, separators=(",", ":"), default=str)
     return hashlib.sha256((PROMPT_VERSION + "|" + blob).encode("utf-8")).hexdigest()[:32]
 
@@ -477,9 +319,6 @@ def cache_stats() -> dict[str, Any]:
     }
 
 
-# --------------------------------------------------------------------------
-# Daily call budget - a hard stop that does not depend on Groq saying no
-# --------------------------------------------------------------------------
 def _budget_state() -> dict[str, Any]:
     today = date.today().isoformat()
     try:
@@ -505,7 +344,6 @@ def budget_remaining() -> int:
 
 
 def _budget_take() -> bool:
-    """Claim one call. False means the budget is spent and we must not call."""
     with _budget_lock:
         state = _budget_state()
         if int(state.get("calls", 0)) >= DAILY_CALL_BUDGET:
@@ -536,14 +374,7 @@ def budget_status() -> dict[str, Any]:
     }
 
 
-# --------------------------------------------------------------------------
-# Token bucket - mirrors Groq's, so we wait here instead of 429ing there
-# --------------------------------------------------------------------------
 class _TokenBucket:
-    """Groq's TPM limit is a bucket refilling at limit/60 per second, and it
-    reserves max_tokens at admission rather than charging actual usage. This
-    models the same thing locally and blocks until there is room."""
-
     def __init__(self, limit: int = DEFAULT_TPM):
         self.limit = float(limit)
         self.available = float(limit)
@@ -552,7 +383,6 @@ class _TokenBucket:
         self.waited_ms = 0.0
 
     def observe_limit(self, limit: int) -> None:
-        """Adopt the real limit once a response header has told us what it is."""
         with self.lock:
             if limit > 0 and abs(limit - self.limit) > 1:
                 self.available = min(self.available, float(limit))
@@ -581,9 +411,6 @@ class _TokenBucket:
 _bucket = _TokenBucket()
 
 
-# --------------------------------------------------------------------------
-# The call
-# --------------------------------------------------------------------------
 def _post(body: dict[str, Any], key: str, stats: dict[str, Any]) -> dict[str, Any]:
     last_error = None
     for attempt in range(MAX_RETRIES):
@@ -619,11 +446,9 @@ def _post(body: dict[str, Any], key: str, stats: dict[str, Any]) -> dict[str, An
             code = ""
             try:
                 code = str(r.json().get("error", {}).get("code", ""))
-            except ValueError:                        # not JSON; fall through
+            except ValueError:
                 pass
-            # Both of these mean "the answer did not come out whole", and both
-            # are retried by the caller with fewer records rather than here with
-            # the same request - a second identical call fails identically.
+
             if code == "json_validate_failed" or "expected schema" in r.text:
                 raise _NeedsSmallerBatch("groq 400 %s" % (code or "schema mismatch"))
             if "response_format" in r.text:
@@ -633,9 +458,6 @@ def _post(body: dict[str, Any], key: str, stats: dict[str, Any]) -> dict[str, An
             time.sleep(1.0 * (attempt + 1))
             continue
 
-        # Count tokens here rather than at the call site, so a response that is
-        # about to be rejected for being truncated still gets charged for what
-        # it actually spent. It cost the bucket the same either way.
         data = r.json()
         usage = data.get("usage") or {}
         prompt_tokens = int(usage.get("prompt_tokens", 0) or 0)
@@ -648,7 +470,6 @@ def _post(body: dict[str, Any], key: str, stats: dict[str, Any]) -> dict[str, An
 
 
 def _max_tokens_for(records: int) -> int:
-    """Room for the reasoning pass plus one answer per record, within the ceiling."""
     return max(MAX_TOKENS_FLOOR,
                min(MAX_TOKENS_CEILING,
                    REASONING_HEADROOM + MAX_TOKENS_PER_RECORD * records))
@@ -656,8 +477,6 @@ def _max_tokens_for(records: int) -> int:
 
 def _ask(batch: list[tuple[str, dict[str, Any]]], model: str, key: str,
          stats: dict[str, Any]) -> dict[str, Any]:
-    # Claimed here rather than per batch in explain(), because a batch that gets
-    # split makes more than one call and each of those is a real request.
     if not _budget_take():
         raise LLMUnavailable(
             "the local daily call budget of %d is spent (GROQ_DAILY_CALL_BUDGET)"
@@ -684,16 +503,12 @@ def _ask(batch: list[tuple[str, dict[str, Any]]], model: str, key: str,
         },
     }
 
-    # Reserve against the local bucket the same way Groq does: prompt estimate
-    # plus the full max_tokens, because Groq reserves at admission rather than
-    # charging actual usage.
     estimate = int(len(SYSTEM_PROMPT + user) / CHARS_PER_TOKEN) + max_tokens
     _bucket.take(estimate)
 
     try:
         raw = _post(body, key, stats)
     except _SchemaUnsupported:
-        # Model does not support json_schema; json_object is supported everywhere.
         body["response_format"] = {"type": "json_object"}
         body["messages"][0]["content"] += (
             '\nReply as {"results":[{"id":"...","category":"one of %s",'
@@ -704,9 +519,7 @@ def _ask(batch: list[tuple[str, dict[str, Any]]], model: str, key: str,
         raw = _post(body, key, stats)
 
     choice = raw["choices"][0]
-    # A truncated array is not a partial success. Groq returns 200 with whatever
-    # fitted, so without this check the missing rows look like records the model
-    # chose not to answer, and get written off as unavailable.
+
     if choice.get("finish_reason") == "length":
         raise _NeedsSmallerBatch(
             "answer hit max_tokens=%d and was cut off" % max_tokens)
@@ -719,13 +532,6 @@ def _ask(batch: list[tuple[str, dict[str, Any]]], model: str, key: str,
 
 def _ask_split(batch: list[tuple[str, dict[str, Any]]], model: str, key: str,
                stats: dict[str, Any]) -> dict[str, Any]:
-    """Ask about a batch, halving it to recover whatever did not come back whole.
-
-    Two things are retried smaller rather than written off: a request the model
-    could not fit an answer into, and a well-formed answer that simply left rows
-    out. In both cases the records are fine and the request was too big, so
-    marking them unavailable would blame the data for a budgeting mistake.
-    """
     try:
         out = _ask(batch, model, key, stats)
     except _NeedsSmallerBatch:
@@ -736,12 +542,9 @@ def _ask_split(batch: list[tuple[str, dict[str, Any]]], model: str, key: str,
         merged: list[dict[str, Any]] = []
         failures: list[str] = []
         for half in (batch[:mid], batch[mid:]):
-            # One half failing must not throw away the other half's answers.
-            # Records with nothing to show for them are marked unavailable
-            # individually by the caller, which is the honest granularity.
             try:
                 merged.extend(_ask_split(half, model, key, stats)["results"])
-            except Exception as exc:                  # noqa: BLE001
+            except Exception as exc:
                 failures.append(str(exc))
         if not merged and failures:
             raise _NeedsSmallerBatch("; ".join(failures)[:200])
@@ -751,11 +554,10 @@ def _ask_split(batch: list[tuple[str, dict[str, Any]]], model: str, key: str,
     missing = [pair for pair in batch if pair[0] not in answered]
     if missing and len(missing) < len(batch):
         stats["rows_refetched"] = int(stats.get("rows_refetched", 0)) + len(missing)
-        # Same rule as above: failing to recover the stragglers is not a reason
-        # to discard the rows that did come back.
+
         try:
             out["results"].extend(_ask_split(missing, model, key, stats)["results"])
-        except Exception as exc:                      # noqa: BLE001
+        except Exception as exc:
             stats["errors"].append("refetch of %d row(s): %s" % (len(missing), str(exc)[:160]))
     return out
 
@@ -803,9 +605,7 @@ def _blank_stats(requested: int) -> dict[str, Any]:
         "completion_tokens": 0,
         "tokens_saved_by_cache": 0,
         "rate_limited": 0,
-        # Batches the model could not answer whole, and the rows recovered by
-        # asking again in smaller pieces. Both should normally be 0; a run where
-        # they climb is a run where MAX_TOKENS_PER_RECORD wants re-measuring.
+
         "batch_splits": 0,
         "rows_refetched": 0,
         "bucket_wait_ms": 0.0,
@@ -816,18 +616,9 @@ def _blank_stats(requested: int) -> dict[str, Any]:
     }
 
 
-# --------------------------------------------------------------------------
-# Public entry point
-# --------------------------------------------------------------------------
 def explain(
     payloads: list[tuple[str, dict[str, Any]]], progress: Any = None
 ) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
-    """payloads: (exception_id, compact_payload) pairs, compacted by compact_payload().
-
-    Returns (results_by_exception_id, stats). Never raises: if Groq is
-    unreachable every exception comes back marked source='unavailable' rather
-    than invented.
-    """
     stats = _blank_stats(len(payloads))
     if not payloads:
         return {}, stats
@@ -836,14 +627,12 @@ def explain(
     results: dict[str, dict[str, Any]] = {}
     pending: list[tuple[str, dict[str, Any]]] = []
 
-    # Cache first, always, and before anything that could fail. A cached answer
-    # is served whether or not there is a key, a network, or a budget left.
     for eid, compact in payloads:
         hit = cache.get(fingerprint(compact))
         if hit:
             results[eid] = dict(hit, cached=True)
             stats["from_cache"] += 1
-            # What that hit would have cost had we sent it.
+
             stats["tokens_saved_by_cache"] += int(
                 len(json.dumps(compact, separators=(",", ":"), default=str)) / 3.6
             ) + MAX_TOKENS_PER_RECORD
@@ -856,7 +645,6 @@ def explain(
         stats["model"] = next((r.get("model") for r in results.values() if r.get("model")), None)
         return results, stats
 
-    # ---- mock mode: no network, no key, no budget ------------------------
     if use_mock():
         stats["model"] = mockllm.MODEL_NAME
         for eid, compact in pending:
@@ -870,7 +658,6 @@ def explain(
             progress(len(pending), len(pending))
         return results, stats
 
-    # ---- live ------------------------------------------------------------
     key = api_key()
     if not key:
         stats["errors"].append("GROQ_API_KEY is not set")
@@ -891,13 +678,10 @@ def explain(
     done = 0
 
     for batch in batches:
-        # The call budget and the token counters are both claimed inside _ask
-        # now, because a split batch is more than one request and each half has
-        # to be accounted for on its own.
         try:
             out = _ask_split(batch, model, key, stats)
             err = ""
-        except Exception as exc:            # noqa: BLE001 - the API surface is wide
+        except Exception as exc:
             out, err = {"results": []}, str(exc)[:300]
             stats["errors"].append(err)
 
@@ -926,11 +710,6 @@ def explain(
 def explain_exceptions(
     payloads: list[dict[str, Any]], progress: Any = None
 ) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
-    """Backwards-compatible entry point taking verbose payloads with exception_id.
-
-    Kept so scripts written against the first version still run. New callers
-    should use explain() with compact_payload().
-    """
     pairs = []
     for p in payloads:
         eid = p["exception_id"]

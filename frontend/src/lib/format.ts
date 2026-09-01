@@ -1,5 +1,3 @@
-/* Formatting helpers. Money is Indian-grouped (lakh/crore) because the data is INR. */
-
 const inr = new Intl.NumberFormat('en-IN', {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
@@ -18,15 +16,12 @@ export function compactMoney(value: number): string {
   return sign + inr.format(abs)
 }
 
-/** A grouped whole number - token counts, call counts. Indian grouping, to
- *  match the money formatter above rather than mixing conventions on one page. */
 const grouped = new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 })
 
 export function count(value: number): string {
   return grouped.format(Math.round(value))
 }
 
-/** Hours to one decimal. 7.2 h reads as an estimate, which it is. */
 export function hours(value: number): string {
   return `${value.toFixed(1)} h`
 }
@@ -41,17 +36,14 @@ export function shortDate(iso: string): string {
   return `${d} ${months[Number(m) - 1] ?? m} ${y.slice(2)}`
 }
 
-/** Turns engine and LLM slugs into desk language. */
 export function humanise(slug: string): string {
   const map: Record<string, string> = {
-    // exception kinds
     duplicate: 'Duplicate',
     composite_candidate: 'Batched settlement',
     fuzzy_candidate: 'Reference mismatch',
     below_auto_threshold: 'Below your floor',
     unmatched_ledger: 'Not settled',
     unmatched_bank: 'Unexplained credit',
-    // link methods
     exact_reference_amount_date: 'Exact',
     amount_rounding: 'Rounding',
     date_delay: 'Settlement delay',
@@ -61,7 +53,6 @@ export function humanise(slug: string): string {
     composite_many_to_one: 'Batched',
     composite_one_to_many: 'Split payout',
     fuzzy_reference: 'Fuzzy reference',
-    // llm categories
     fee_adjustment: 'Fee adjustment',
     split_payment: 'Split payment',
     reference_mismatch: 'Reference mismatch',
@@ -69,7 +60,6 @@ export function humanise(slug: string): string {
     orphan_bank: 'Unexplained credit',
     orphan_ledger: 'Never settled',
     other: 'Other',
-    // ground-truth categories
     clean_exact: 'Clean match',
     date_shift: 'Settlement delay',
     fee_deducted: 'Fee deducted',
@@ -86,18 +76,6 @@ export function humanise(slug: string): string {
   return slug.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase())
 }
 
-/**
- * Did a model actually answer for this exception?
- *
- * Deliberately accepts the rule-based stand-in as well as Groq. Checking only
- * for 'groq' is what made every mock verdict render as "model unavailable" and
- * fall back to the engine note - the answer was there, the UI just did not
- * recognise who wrote it.
- *
- * Whether it was the real model or the stand-in is a *labelling* question, and
- * every surface that shows a verdict answers it separately with a badge. It is
- * not a question about whether an answer exists.
- */
 export function hasVerdict(source: string | undefined | null): boolean {
   return source === 'groq' || source === 'mock'
 }

@@ -4,15 +4,6 @@ import { Check, Cpu, Loader2 } from 'lucide-react'
 import type { BankRecord, LedgerRecord, Link, PassStat, Summary } from '../lib/api'
 import { CanvasLegend, MatchCanvas } from './MatchCanvas'
 
-/* ==========================================================================
-   The processing sequence.
-
-   The engine finishes in about 25 milliseconds, which is too fast to see and
-   too fast to explain. So the stages are paced out - but every number on this
-   screen is the real measurement from the run that just happened, including
-   the actual per-pass duration, which is printed next to each stage precisely
-   so the pacing can't be mistaken for the timing.
-   ========================================================================== */
 
 const STAGE_MS = 780
 const LLM_MIN_MS = 900
@@ -41,14 +32,12 @@ export function Processing({
   const [llmShown, setLlmShown] = useState(false)
   const doneRef = useRef(false)
 
-  // Walk the deterministic passes.
   useEffect(() => {
     if (stage >= passes.length) return
     const t = setTimeout(() => setStage((s) => s + 1), STAGE_MS)
     return () => clearTimeout(t)
   }, [stage, passes.length])
 
-  // Then hold on the LLM stage until it has genuinely come back.
   useEffect(() => {
     if (stage < passes.length) return
     const t = setTimeout(() => setLlmShown(true), 250)
@@ -211,7 +200,6 @@ function LlmRow({
                   {stats.from_cache > 0 && (
                     <span className="text-mute">{stats.from_cache} cached</span>
                   )}
-                  {stats.model && <span className="text-mute">{stats.model}</span>}
                 </>
               )}
             </motion.div>

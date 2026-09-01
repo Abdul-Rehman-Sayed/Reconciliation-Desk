@@ -6,23 +6,6 @@ import { api } from '../lib/api'
 import { pct } from '../lib/format'
 import { Panel } from './bits'
 
-/* ==========================================================================
-   Live tolerance adjustment.
-
-   The one screen here that touches the risky part of the system, so it is
-   built to make the risk impossible rather than unlikely:
-
-   - Moving a slider calls /thresholds, which re-runs the six deterministic
-     passes and nothing else. That route cannot reach the model. It is not
-     "we chose not to call it" - there is no code path from a slider to Groq.
-   - Every preview reports LLM coverage: how many exceptions at these new
-     settings already have a cached verdict and how many would need a fresh
-     call. That number is shown before anything could be spent.
-   - Explaining a new setting is a separate, deliberate button.
-
-   This matters because the person dragging the slider during a demo is an
-   audience member, and an audience member should not be able to spend quota.
-   ========================================================================== */
 
 const DEBOUNCE_MS = 180
 
@@ -333,9 +316,6 @@ function Line({
   invert?: boolean
   asPct?: boolean
 }) {
-  // For exceptions and unresolved counts, fewer is better - so the colour of a
-  // negative delta has to flip. Getting this backwards would read as the engine
-  // improving while it degrades.
   const good = d === undefined || d === 0 ? null : invert ? d < 0 : d > 0
   return (
     <div className="flex justify-between gap-2 px-3 py-1.5">

@@ -3,7 +3,6 @@ import type { BankRecord, ExceptionRow, LedgerRecord } from '../lib/api'
 import { hasVerdict, humanise, money, shortDate } from '../lib/format'
 import { SidePanel, Tag } from './bits'
 
-/* Side by side, with the differences called out rather than left to be spotted. */
 
 export function ExceptionDetail({
   exception,
@@ -54,9 +53,6 @@ export function ExceptionDetail({
             </span>
             {hasVerdict(exception.llm.source) ? (
               <>
-                <span className="num text-[9px] normal-case text-mute">
-                  {exception.llm.model}
-                </span>
                 {exception.llm.source === 'mock' && <Tag tone="ochre">stand-in</Tag>}
                 {exception.llm.cached && <Tag tone="slate">cached</Tag>}
               </>
@@ -68,7 +64,6 @@ export function ExceptionDetail({
         </div>
       )}
 
-      {/* --- the two sides --- */}
       <div className="border-t border-rule">
         <div className="grid grid-cols-1 divide-y divide-rule sm:grid-cols-2 sm:divide-x sm:divide-y-0">
           <Side title={`Ledger · ${ledger.length}`} empty="Nothing on this side">

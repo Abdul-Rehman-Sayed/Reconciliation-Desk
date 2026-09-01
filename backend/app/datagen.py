@@ -1,16 +1,3 @@
-"""
-Synthetic reconciliation dataset generator.
-
-Produces three artefacts from one set of ground-truth "cases":
-
-    ledger.csv          the merchant's internal record
-    bank_statement.csv  the bank / gateway settlement record
-    ground_truth.json   what actually happened  (the engine NEVER reads this)
-
-Every flaw in the data is injected deliberately and recorded in ground_truth.json,
-which is what makes the accuracy number in the demo defensible rather than asserted.
-"""
-
 from __future__ import annotations
 
 import csv
@@ -24,9 +11,7 @@ from typing import Any
 
 from faker import Faker
 
-# --------------------------------------------------------------------------
-# Flaw mix. Shares are of the total case count.
-# --------------------------------------------------------------------------
+
 FLAW_MIX: dict[str, float] = {
     "clean_exact": 0.60,
     "date_shift": 0.15,
@@ -39,10 +24,7 @@ FLAW_MIX: dict[str, float] = {
     "orphan_ledger": 0.01,
 }
 
-# The stress mix keeps every category above and spends 12 points of the clean
-# share on four adversarial ones. These exist because a matching engine scored
-# only against textbook versions of its own flaw categories will score suspiciously
-# well. Each of these is a failure mode the thresholds were not designed around.
+
 STRESS_MIX: dict[str, float] = {
     "clean_exact": 0.48,
     "date_shift": 0.15,
@@ -59,8 +41,7 @@ STRESS_MIX: dict[str, float] = {
     "late_settlement": 0.03,
 }
 
-# Gateway fee rates actually seen in Indian PG settlements:
-# base rate + 18% GST on the fee.  2% -> 2.36%, 1% -> 1.18%, 2.5% -> 2.95%.
+
 FEE_RATES = (0.0118, 0.0236, 0.0295)
 
 PAYMENT_METHODS = ("UPI", "CARD", "NETBANKING", "IMPS", "NEFT", "WALLET")
@@ -72,9 +53,6 @@ WINDOW_DAYS = 46
 REF_ALPHABET = string.ascii_uppercase + string.ascii_lowercase + string.digits
 
 
-# --------------------------------------------------------------------------
-# Row containers
-# --------------------------------------------------------------------------
 @dataclass
 class LedgerRow:
     txn_id: str
@@ -98,16 +76,13 @@ class BankRow:
 
 @dataclass
 class Case:
-    """One ground-truth event, plus how it was distorted across the two files."""
-
     case_id: str
     category: str
     expected_links: list[list[str]] = field(default_factory=list)
     duplicate_ids: list[str] = field(default_factory=list)
     unresolved_ids: list[str] = field(default_factory=list)
     detail: dict[str, Any] = field(default_factory=dict)
-    # True when linking the records is not enough: the discrepancy is material and
-    # the engine is expected to route it to a human rather than auto-resolve it.
+
     require_human: bool = False
 
 
@@ -130,7 +105,6 @@ class Generator:
         self._cseq = 0
         self._used_refs: set[str] = set()
 
-    # -- primitives --------------------------------------------------------
     def _ledger_id(self) -> str:
         self._lseq += 1
         return "L%05d" % self._lseq
@@ -152,7 +126,6 @@ class Generator:
                 return ref
 
     def _amount(self) -> float:
-        """Right-skewed amounts: lots of small payments, a few large ones."""
         base = self.rng.lognormvariate(8.6, 1.05)
         return round(min(max(base, 249.0), 486000.0), 2)
 
@@ -217,14 +190,7 @@ class Generator:
         self.bank.append(row)
         return row
 
-    # -- reference corruption ---------------------------------------------
     def _typo(self, ref: str) -> tuple[str, str]:
-        """Corrupt a reference the way a human or a legacy system would.
-
-        Returns (corrupted_ref, kind).  Kinds are split deliberately between
-        mild damage (still auto-resolvable by the tolerant pass) and heavy
-        damage (has to survive to the fuzzy pass and get an LLM opinion).
-        """
         prefix, body = ref.split("_", 1)
         kind = self.rng.choice(
             ["transpose", "substitute", "drop_char", "truncate", "truncate", "prefix_lost"]
@@ -246,15 +212,14 @@ class Generator:
         if kind == "truncate":
             keep = self.rng.randint(7, 9)
             return prefix + "_" + "".join(chars[:keep]), kind
-        # prefix_lost: the bank drops the pay_ prefix and keeps a partial body
+
         return "".join(chars[: self.rng.randint(9, 12)]), kind
 
-    # -- case builders -----------------------------------------------------
     def case_clean_exact(self) -> Case:
         d, amt, party, ref = self._date(), self._amount(), self._counterparty(), self._ref()
         m = self.rng.choice(PAYMENT_METHODS)
         lr = self._emit_ledger(d, amt, party, ref, m)
-        # Even a "clean" match can land a day later; both sit inside pass 1's window.
+
         bd = d + timedelta(days=self.rng.choice([0, 0, 0, 1]))
         br = self._emit_bank(bd, amt, ref, self._narration(ref, party, m))
         return Case(
@@ -294,7 +259,6 @@ class Generator:
         )
 
     def case_duplicate_ledger(self) -> Case:
-        """Webhook fired twice: two ledger rows, one real bank credit."""
         d, amt, party, ref = self._date(), self._amount(), self._counterparty(), self._ref()
         m = self.rng.choice(PAYMENT_METHODS)
         first = self._emit_ledger(d, amt, party, ref, m)
@@ -311,7 +275,6 @@ class Generator:
         )
 
     def case_split_batch(self) -> Case:
-        """N ledger rows settle as one bank credit, or one payout leaves as N debits."""
         party = self._counterparty()
         reverse = self.rng.random() < 0.25
         d = self._date()
@@ -358,7 +321,6 @@ class Generator:
                 },
             )
 
-        # reverse: one ledger payout arrives as two bank debits
         amt = self._amount() + 20000
         ref = self._ref()
         lr = self._emit_ledger(d, amt, party, ref, "NEFT")
@@ -403,7 +365,6 @@ class Generator:
         )
 
     def case_refund_reversal(self) -> Case:
-        """A captured payment and its later reversal. Should net to zero, both sides."""
         d, amt, party, ref = self._date(), self._amount(), self._counterparty(), self._ref()
         m = self.rng.choice(PAYMENT_METHODS)
         pay_l = self._emit_ledger(d, amt, party, ref, m, status="captured")
@@ -435,7 +396,6 @@ class Generator:
         )
 
     def case_orphan_bank(self) -> Case:
-        """Money in the bank with nothing behind it in the ledger. Stays unresolved."""
         d, amt = self._date(), self._amount()
         flavour = self.rng.choice(["unknown_credit", "chargeback", "bank_interest", "misc_fee"])
         if flavour == "bank_interest":
@@ -470,7 +430,6 @@ class Generator:
         )
 
     def case_orphan_ledger(self) -> Case:
-        """Ledger says the money came in. The bank never saw it. Stays unresolved."""
         d, amt, party, ref = self._date(), self._amount(), self._counterparty(), self._ref()
         status = self.rng.choice(["captured", "captured", "captured", "initiated"])
         lr = self._emit_ledger(d, amt, party, ref, status=status)
@@ -482,10 +441,7 @@ class Generator:
             detail={"ledger_status": status},
         )
 
-    # -- adversarial cases (stress mix only) -------------------------------
     def case_ambiguous_decoy(self) -> Case:
-        """Two payments from one counterparty whose references share a prefix, and a
-        bank that truncated both. Only the amounts tell them apart."""
         party = self._counterparty()
         d = self._date()
         stem = "".join(self.rng.choice(REF_ALPHABET) for _ in range(8))
@@ -510,8 +466,6 @@ class Generator:
         )
 
     def case_partial_settlement(self) -> Case:
-        """The bank paid less than the ledger says, and not by any fee formula.
-        Linking the two is right; auto-resolving without telling anyone is not."""
         d, amt, party, ref = self._date(), self._amount() + 8000, self._counterparty(), self._ref()
         m = self.rng.choice(PAYMENT_METHODS)
         shortfall = round(abs(amt) * self.rng.uniform(0.08, 0.30), 2)
@@ -527,8 +481,6 @@ class Generator:
         )
 
     def case_narration_only_ref(self) -> Case:
-        """The statement's reference column is blank. The reference is buried in the
-        narration text, which is where a lot of real bank exports put it."""
         d, amt, party, ref = self._date(), self._amount(), self._counterparty(), self._ref()
         m = self.rng.choice(PAYMENT_METHODS)
         lr = self._emit_ledger(d, amt, party, ref, m)
@@ -540,8 +492,6 @@ class Generator:
         )
 
     def case_late_settlement(self) -> Case:
-        """T+8 to T+12. Everything else matches perfectly. This sits outside every
-        date window the engine uses, on purpose."""
         d, amt, party, ref = self._date(), self._amount(), self._counterparty(), self._ref()
         m = self.rng.choice(PAYMENT_METHODS)
         shift = self.rng.randint(8, 12)
@@ -553,7 +503,6 @@ class Generator:
             detail={"day_shift": shift},
         )
 
-    # -- driver ------------------------------------------------------------
     def build(self) -> None:
         plan: list[str] = []
         for category, share in self.mix.items():
@@ -581,7 +530,6 @@ class Generator:
         for category in plan:
             self.cases.append(builders[category]())
 
-        # Files arrive sorted by date, the way a real export would.
         self.ledger.sort(key=lambda r: (r.date, r.txn_id))
         self.bank.sort(key=lambda r: (r.date, r.stmt_id))
 

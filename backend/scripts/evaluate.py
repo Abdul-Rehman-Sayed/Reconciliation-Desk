@@ -1,9 +1,3 @@
-"""Run the deterministic engine on the bundled data and score it. No LLM, no UI.
-
-    python scripts/evaluate.py
-    python scripts/evaluate.py --verbose     # also list every incorrect case
-"""
-
 from __future__ import annotations
 
 import argparse
@@ -12,9 +6,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from app.dataio import load_bundled, load_ground_truth  # noqa: E402
-from app.matching import reconcile  # noqa: E402
-from app.scoring import print_report, score  # noqa: E402
+from app.dataio import load_bundled, load_ground_truth
+from app.matching import reconcile
+from app.scoring import print_report, score
 
 
 def main() -> None:
@@ -41,10 +35,7 @@ def main() -> None:
               % (p["name"], p["duration_ms"], p["links_made"], p["records_resolved"],
                  p["remaining_ledger"], p["remaining_bank"]))
     print()
-    # Two different units below, kept in two blocks on purpose. Records
-    # partition the batch and sum to the total; exceptions are *groups* and do
-    # not. Printing them as one column of integers invites the reader to add
-    # 52 to 772 and find it does not reach 856.
+
     auto = summary["records_auto_resolved"]
     proposed = summary["records_proposed"]
     unresolved = summary["records_unresolved"]

@@ -1,10 +1,3 @@
-"""Regenerate the bundled sample dataset.
-
-    python scripts/generate_data.py                  # 400 cases, default seed
-    python scripts/generate_data.py --cases 450 --seed 7
-    python scripts/generate_data.py --out ../some/dir
-"""
-
 from __future__ import annotations
 
 import argparse
@@ -13,7 +6,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from app.datagen import generate  # noqa: E402
+from app.datagen import generate
 
 DEFAULT_OUT = Path(__file__).resolve().parents[1] / "data"
 

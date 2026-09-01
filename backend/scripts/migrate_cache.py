@@ -1,14 +1,3 @@
-"""Recover already-paid-for Groq verdicts out of saved runs and into the v2 cache.
-
-The cache key is a hash of the exact payload sent, so changing the payload shape
-orphans every entry written under the old shape. Those entries were paid for in
-real quota. This walks the saved runs, rebuilds the v2 fingerprint from the
-exception and its records, and re-files the verdict under the new key.
-
-    python scripts/migrate_cache.py            # report what would move
-    python scripts/migrate_cache.py --write    # actually move it
-"""
-
 from __future__ import annotations
 
 import argparse
@@ -18,7 +7,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from app import llm, store  # noqa: E402
+from app import llm, store
 
 
 def main() -> None:
@@ -41,9 +30,7 @@ def main() -> None:
         lookup = {r["id"]: r for r in run["records"]["ledger"] + run["records"]["bank"]}
         for exc in run.get("exceptions", []):
             verdict = exc.get("llm")
-            # Only real model output is worth recovering. An "unavailable"
-            # placeholder is not an answer, and caching one would pin a failure
-            # in place forever.
+
             if not verdict or verdict.get("source") != "groq":
                 skipped += 1
                 continue

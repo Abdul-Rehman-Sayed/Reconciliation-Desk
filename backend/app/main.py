@@ -1,21 +1,3 @@
-"""FastAPI surface over the engine, the LLM handler and the run store.
-
-Reconciliation is deliberately two calls, not one:
-
-    POST /api/reconcile            deterministic passes only, returns in ~100ms
-    POST /api/runs/{id}/explain    sends the surviving exceptions to Groq
-
-That split is the architecture made visible. The UI runs the first, shows every
-pass resolving with its real counts, and only then calls the second - so what you
-watch on screen is the order the work actually happened in.
-
-Everything added since - the confusion matrix, calibration, baselines, cost
-split, provenance, audit log, threshold preview - reads what is already on disk.
-The only two routes in this file that can spend a token are /explain and the
-explicit /thresholds/explain, and both report what they are about to spend
-before they spend it.
-"""
-
 from __future__ import annotations
 
 import hashlib
@@ -60,17 +42,12 @@ app.add_middleware(
 )
 
 
-# --------------------------------------------------------------------------
-# Models
-# --------------------------------------------------------------------------
 class ActionRequest(BaseModel):
     action: Literal["approve", "reject", "investigate"]
     note: str | None = Field(default=None, max_length=500)
 
 
 class ThresholdRequest(BaseModel):
-    """Threshold overrides. Only the adjustable set is accepted."""
-
     overrides: dict[str, float] = Field(default_factory=dict)
     commit: bool = False
 
@@ -83,9 +60,6 @@ class ReconcileResponse(BaseModel):
     adapter: dict[str, Any] | None = None
 
 
-# --------------------------------------------------------------------------
-# Helpers
-# --------------------------------------------------------------------------
 def _require(run_id: str) -> dict[str, Any]:
     try:
         run = store.load(run_id)
@@ -96,26 +70,10 @@ def _require(run_id: str) -> dict[str, Any]:
     return run
 
 
-# Bump whenever the shape of a stored run changes - a new summary field, a
-# changed pass, anything that makes an older file on disk no longer the answer
-# this code would produce. It is part of the fingerprint below, so a bump
-# retires every stale run automatically instead of serving it as fresh.
-#   2 - added summary.exception_records and summary.accounting_overlap
 RUN_SCHEMA_VERSION = 2
 
 
 def _fingerprint(ledger_rows, bank_rows, thresholds: Thresholds) -> str:
-    """Identity of a run: the input rows, the thresholds, and the run schema.
-
-    This is what makes a re-run free. The same two files at the same tolerances
-    produce the same reconciliation every time - the engine is deterministic -
-    so recomputing it is work with a known answer.
-
-    The schema version is in here because "the same inputs" is not sufficient
-    identity on its own: a run stored before a summary field existed is a
-    genuinely different answer to the same question, and reusing it would serve
-    a summary this code can no longer produce.
-    """
     blob = json.dumps(
         {"l": ledger_rows, "b": bank_rows, "t": thresholds.as_dict(),
          "v": RUN_SCHEMA_VERSION},
@@ -145,7 +103,7 @@ def _thresholds_from(overrides: dict[str, float] | None) -> Thresholds:
             raise HTTPException(
                 422, "%s must be between %s and %s" % (key, spec["min"], spec["max"])
             )
-        # The date windows are whole days; the engine compares them to ints.
+
         clean[key] = int(round(value)) if spec["unit"] == "days" else value
     try:
         return DEFAULT_THRESHOLDS.replace(**clean)
@@ -167,7 +125,7 @@ def _build_run(ledger_rows, bank_rows, source: str, profile: str,
         try:
             accuracy = score(engine, truth)
         except (KeyError, TypeError):
-            accuracy = None      # uploaded data with no matching answer key
+            accuracy = None
 
     return {
         "run_id": store.new_run_id(),
@@ -197,7 +155,6 @@ def _record_lookup(run: dict[str, Any]) -> dict[str, Any]:
 
 
 def _payloads_for(run: dict[str, Any]) -> list[tuple[str, dict[str, Any]]]:
-    """The compact (exception_id, payload) pairs that would go to the model."""
     lookup = _record_lookup(run)
     return [
         (exc["exception_id"], llm.compact_payload(exc, lookup))
@@ -212,6 +169,21 @@ def _decisions(run: dict[str, Any]) -> dict[str, int]:
     return out
 
 
+def _apply_verdicts(run: dict[str, Any], results: dict[str, Any],
+                    stats: dict[str, Any]) -> int:
+    for exc in run["exceptions"]:
+        if exc["exception_id"] in results:
+            exc["llm"] = results[exc["exception_id"]]
+
+    missing = [exc for exc in run["exceptions"]
+               if exc.get("needs_llm")
+               and (exc.get("llm") or {}).get("source") not in ("groq", "mock")]
+    run["llm_complete"] = not missing
+    run["llm_stats"] = stats
+    store.save(run)
+    return len(missing)
+
+
 def _truth_for(run: dict[str, Any]) -> dict[str, Any] | None:
     if run.get("source") != "bundled":
         return None
@@ -221,12 +193,8 @@ def _truth_for(run: dict[str, Any]) -> dict[str, Any] | None:
         return None
 
 
-# --------------------------------------------------------------------------
-# Routes - status
-# --------------------------------------------------------------------------
 @app.get("/api/health")
 def health() -> dict[str, Any]:
-    """Also reports whether Groq is actually reachable, checked live, not assumed."""
     info: dict[str, Any] = {
         "status": "ok",
         "mock_mode": llm.use_mock(),
@@ -235,9 +203,6 @@ def health() -> dict[str, Any]:
         "budget": llm.budget_status(),
     }
     if info["mock_mode"]:
-        # In mock mode nothing here should reach the network, including the
-        # health check itself - a probe that costs a request would undo the
-        # point of the flag.
         info.update(groq_reachable=False, groq_model=llm.mockllm.MODEL_NAME,
                     groq_error="USE_MOCK_LLM is on; no live calls will be made")
         return info
@@ -245,7 +210,7 @@ def health() -> dict[str, Any]:
         try:
             info["groq_model"] = llm.resolve_model()
             info["groq_reachable"] = True
-        except Exception as exc:                      # noqa: BLE001
+        except Exception as exc:
             info["groq_reachable"] = False
             info["groq_error"] = str(exc)[:300]
     else:
@@ -256,19 +221,17 @@ def health() -> dict[str, Any]:
 
 @app.get("/api/datasets")
 def datasets() -> dict[str, Any]:
-    """The bundled datasets, described from the files themselves."""
     return {"datasets": describe_profiles()}
 
 
 @app.get("/api/models")
 def models() -> dict[str, Any]:
-    """The live Groq model list. Nothing about the model name is hardcoded."""
     if llm.use_mock():
         return {"available": [llm.mockllm.MODEL_NAME], "preference": llm.MODEL_PREFERENCE,
                 "selected": llm.mockllm.MODEL_NAME, "mock_mode": True}
     try:
         available = llm.list_models()
-    except Exception as exc:                          # noqa: BLE001
+    except Exception as exc:
         raise HTTPException(503, str(exc)[:300])
     return {"available": available, "preference": llm.MODEL_PREFERENCE,
             "selected": llm.resolve_model(), "mock_mode": False}
@@ -276,7 +239,6 @@ def models() -> dict[str, Any]:
 
 @app.get("/api/thresholds")
 def thresholds() -> dict[str, Any]:
-    """What a slider may move, with bounds and units, plus the current defaults."""
     return {
         "adjustable": list(ADJUSTABLE_THRESHOLDS),
         "defaults": DEFAULT_THRESHOLDS.as_dict(),
@@ -288,9 +250,6 @@ def thresholds() -> dict[str, Any]:
     }
 
 
-# --------------------------------------------------------------------------
-# Routes - reconcile
-# --------------------------------------------------------------------------
 @app.post("/api/reconcile", response_model=ReconcileResponse)
 async def reconcile(
     dataset: str = Query(default="standard"),
@@ -298,13 +257,6 @@ async def reconcile(
     ledger: UploadFile | None = File(default=None),
     bank_statement: UploadFile | None = File(default=None),
 ) -> ReconcileResponse:
-    """Run the six deterministic passes. No LLM is called here.
-
-    Idempotent: the same inputs at the same thresholds return the run that
-    already exists rather than building an identical one. Pass force=true to
-    override. This is what makes rehearsing a demo cost nothing - the second
-    run through is a file read, and the LLM verdicts come back from cache.
-    """
     adapter_note: dict[str, Any] | None = None
 
     if ledger is not None and bank_statement is not None:
@@ -313,7 +265,7 @@ async def reconcile(
             bank_rows = read_bank(await bank_statement.read())
         except CsvShapeError as exc:
             raise HTTPException(422, str(exc))
-        except Exception as exc:                      # noqa: BLE001
+        except Exception as exc:
             raise HTTPException(422, "Could not read those CSVs: " + str(exc)[:200])
         source, profile, truth = "upload", "uploaded", None
     elif ledger is not None or bank_statement is not None:
@@ -346,12 +298,6 @@ async def reconcile(
 
 @app.post("/api/runs/{run_id}/explain")
 def explain(run_id: str, dry_run: bool = Query(default=False)) -> dict[str, Any]:
-    """Send only the unresolved / low-confidence remainder to the model.
-
-    dry_run=true answers "what would this cost" without spending anything:
-    how many exceptions are already cached and how many requests the rest
-    would take. Worth checking before a live demo.
-    """
     run = _require(run_id)
     payloads = _payloads_for(run)
 
@@ -375,45 +321,14 @@ def explain(run_id: str, dry_run: bool = Query(default=False)) -> dict[str, Any]
         return {"run_id": run_id, "llm_stats": run.get("llm_stats"), "already_done": True}
 
     results, stats = llm.explain(payloads)
-    for exc in run["exceptions"]:
-        if exc["exception_id"] in results:
-            exc["llm"] = results[exc["exception_id"]]
-
-    # Complete means every exception that needed the model actually got an
-    # answer from it - not merely that we tried. Marking a run complete after a
-    # rate-limited pass would freeze those verdicts as 'unavailable' forever:
-    # the early return above would short-circuit every retry, and the exceptions
-    # that failed for transient reasons would never be asked about again.
-    # Whatever did come back is cached, so a retry only pays for the remainder.
-    missing = [exc for exc in run["exceptions"]
-               if exc.get("needs_llm")
-               and (exc.get("llm") or {}).get("source") not in ("groq", "mock")]
-    run["llm_complete"] = not missing
-    run["llm_stats"] = stats
-    store.save(run)
+    unanswered = _apply_verdicts(run, results, stats)
     return {"run_id": run_id, "llm_stats": stats,
-            "explained": len(results), "unanswered": len(missing),
+            "explained": len(results), "unanswered": unanswered,
             "already_done": False}
 
 
-# --------------------------------------------------------------------------
-# Routes - thresholds
-# --------------------------------------------------------------------------
 @app.post("/api/runs/{run_id}/thresholds")
 def rethreshold(run_id: str, body: ThresholdRequest) -> dict[str, Any]:
-    """Re-run the deterministic passes at different tolerances.
-
-    No model call, ever. Threshold changes only move the deterministic layer's
-    classification, and re-classification is pure computation - the whole batch
-    re-runs in about a tenth of a second.
-
-    What it does report is LLM *coverage*: how many of the exceptions at these
-    new settings already have a cached verdict, and how many would need a fresh
-    call if someone asked for one. A record that changes match tier but was seen
-    before reuses its cached explanation, because the cache is keyed on the
-    evidence rather than on the run. So the answer to "what would this cost" is
-    usually zero, and when it is not, it says so before anything is spent.
-    """
     parent = _require(run_id)
     if parent.get("source") != "bundled":
         raise HTTPException(
@@ -430,7 +345,6 @@ def rethreshold(run_id: str, body: ThresholdRequest) -> dict[str, Any]:
     run = _build_run(ledger_rows, bank_rows, "bundled", profile, truth, thresholds)
     run["derived_from"] = run_id
 
-    # Coverage, computed against the cache without touching the network.
     cache = llm._load_cache()
     lookup = _record_lookup(run)
     cached = 0
@@ -491,32 +405,18 @@ def rethreshold(run_id: str, body: ThresholdRequest) -> dict[str, Any]:
 
 @app.post("/api/runs/{run_id}/thresholds/explain")
 def rethreshold_explain(run_id: str, body: ThresholdRequest) -> dict[str, Any]:
-    """Commit a threshold change and explain whatever is newly unexplained.
-
-    Split out from the preview above deliberately. The preview is what a slider
-    calls, dozens of times, and it can never spend anything. This is a separate
-    button a person has to press, and it only calls the model for exceptions
-    that are both newly ambiguous and not already in the cache.
-    """
     body.commit = True
     preview = rethreshold(run_id, body)
     run = _require(preview["run_id"])
 
     payloads = _payloads_for(run)
     results, stats = llm.explain(payloads)
-    for exc in run["exceptions"]:
-        if exc["exception_id"] in results:
-            exc["llm"] = results[exc["exception_id"]]
-    run["llm_complete"] = True
-    run["llm_stats"] = stats
-    store.save(run)
+    unanswered = _apply_verdicts(run, results, stats)
 
-    return {**preview, "llm_stats": stats, "explained": len(results)}
+    return {**preview, "llm_stats": stats, "explained": len(results),
+            "unanswered": unanswered}
 
 
-# --------------------------------------------------------------------------
-# Routes - analysis
-# --------------------------------------------------------------------------
 @app.get("/api/runs/{run_id}/confusion")
 def confusion(run_id: str) -> dict[str, Any]:
     run = _require(run_id)
@@ -545,7 +445,6 @@ def calibration(run_id: str) -> dict[str, Any]:
 
 @app.get("/api/runs/{run_id}/cost")
 def cost(run_id: str) -> dict[str, Any]:
-    """The cost and latency split, plus hours of manual work avoided."""
     run = _require(run_id)
     bundle = None
     if run.get("source") == "bundled":
@@ -561,13 +460,6 @@ def cost(run_id: str) -> dict[str, Any]:
 
 @app.get("/api/runs/{run_id}/baselines")
 def run_baselines(run_id: str) -> dict[str, Any]:
-    """The naive floor and the LLM-only ceiling, next to what this run did.
-
-    The naive join recomputes here - it is deterministic and costs nothing. The
-    LLM-only figure is read from the frozen subsample on disk and is never
-    measured on request; scripts/baseline.py --llm is the only thing that
-    measures it, and it does so once.
-    """
     run = _require(run_id)
     truth = _truth_for(run)
     if truth is None:
@@ -602,12 +494,8 @@ def run_baselines(run_id: str) -> dict[str, Any]:
     }
 
 
-# --------------------------------------------------------------------------
-# Routes - provenance and audit
-# --------------------------------------------------------------------------
 @app.get("/api/runs/{run_id}/provenance/{record_id}")
 def provenance(run_id: str, record_id: str) -> dict[str, Any]:
-    """Why this record ended up where it did - which pass, which rule, what evidence."""
     run = _require(run_id)
     result = audit.provenance(run, record_id)
     if result is None:
@@ -617,11 +505,6 @@ def provenance(run_id: str, record_id: str) -> dict[str, Any]:
 
 @app.get("/api/runs/{run_id}/audit")
 def audit_log(run_id: str, format: str = Query(default="json", pattern="^(json|csv)$")):
-    """Every decision this run made, plus every decision a person made.
-
-    CSV because that is what gets mailed to an auditor, JSON because that is
-    what gets diffed. Same rows either way.
-    """
     run = _require(run_id)
     if format == "csv":
         return PlainTextResponse(
@@ -633,9 +516,6 @@ def audit_log(run_id: str, format: str = Query(default="json", pattern="^(json|c
             "rows": audit.audit_rows(run)}
 
 
-# --------------------------------------------------------------------------
-# Routes - runs, exceptions, actions
-# --------------------------------------------------------------------------
 @app.get("/api/runs")
 def runs(limit: int = Query(default=25, ge=1, le=100)) -> dict[str, Any]:
     return {"runs": store.list_runs(limit)}
@@ -736,7 +616,6 @@ def _confidence(exc: dict[str, Any]) -> float:
 
 @app.post("/api/runs/{run_id}/exceptions/{exception_id}/action")
 def record_action(run_id: str, exception_id: str, body: ActionRequest) -> dict[str, Any]:
-    """The human gate. Nothing in this system moves without one of these."""
     run = _require(run_id)
     target = next((e for e in run["exceptions"] if e["exception_id"] == exception_id), None)
     if target is None:
@@ -749,9 +628,6 @@ def record_action(run_id: str, exception_id: str, body: ActionRequest) -> dict[s
     target["decided_at"] = at
     target["decided_note"] = body.note
 
-    # Append-only. A decision that was changed leaves both entries behind,
-    # because "they approved it, then reversed it" is exactly the kind of thing
-    # an audit log exists to preserve.
     run.setdefault("audit_events", []).append({
         "at": at,
         "exception_id": exception_id,
@@ -773,7 +649,6 @@ def record_action(run_id: str, exception_id: str, body: ActionRequest) -> dict[s
 
 @app.get("/api/runs/{run_id}/records")
 def records(run_id: str) -> dict[str, Any]:
-    """Both sides plus every link, for the ledger-to-statement view."""
     run = _require(run_id)
     return {"run_id": run_id, "ledger": run["records"]["ledger"],
             "bank": run["records"]["bank"], "links": run["links"]}

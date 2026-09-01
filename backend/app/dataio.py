@@ -1,5 +1,3 @@
-"""CSV loading and light validation for both sides of the reconciliation."""
-
 from __future__ import annotations
 
 import io
@@ -17,11 +15,7 @@ BANK_COLUMNS = ["stmt_id", "date", "amount", "reference_number", "narration", "t
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 
-# Two bundled datasets ship with the repo. "standard" is the flaw mix the brief
-# specifies. "stress" keeps every one of those categories and spends 12 points of
-# the clean share on adversarial ones the thresholds were never designed around.
-# Running both is the point: the auto-resolve rate drops on the harder data while
-# precision holds, which is how a reconciliation system is supposed to degrade.
+
 PROFILES = ("standard", "stress")
 
 
@@ -61,14 +55,6 @@ def read_ledger(source: str | Path | bytes) -> list[dict[str, Any]]:
 def read_ledger_described(
     source: str | Path | bytes,
 ) -> tuple[list[dict[str, Any]], dict[str, Any] | None]:
-    """Ledger rows, plus a note if an adapter had to translate them first.
-
-    A settlement export from a real gateway does not have our column names, and
-    telling someone "missing required column: txn_id" when they have handed us a
-    perfectly good Razorpay recon report is a bad answer. Adapters are tried
-    before the shape check, and what they did is reported back so the interface
-    can say so rather than silently reinterpreting the file.
-    """
     buf = io.BytesIO(source) if isinstance(source, bytes) else source
     frame = pd.read_csv(buf, dtype=str)
     frame.columns = [str(c).strip().lower() for c in frame.columns]
@@ -108,7 +94,6 @@ def load_ground_truth(profile: str = "standard") -> dict[str, Any] | None:
 
 
 def describe_profiles() -> list[dict[str, Any]]:
-    """What the start screen offers, read off the actual files on disk."""
     out = []
     for name in PROFILES:
         truth = load_ground_truth(name)

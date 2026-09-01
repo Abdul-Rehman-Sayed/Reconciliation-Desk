@@ -1,18 +1,3 @@
-"""Measure the two naive baselines the layered engine is compared against.
-
-The naive join is deterministic and free, so it recomputes every time.
-
-The LLM-only baseline costs one real request and is frozen to
-data/baselines/ the first time it runs. It will not run again unless you pass
---force, which is the point: the whole claim being made is that sending
-everything to a model is expensive, and re-proving that on every rehearsal
-would be an odd way to demonstrate it.
-
-    python scripts/baseline.py                    # naive only, plus whatever is frozen
-    python scripts/baseline.py --llm              # measure LLM-only if not already frozen
-    python scripts/baseline.py --llm --force      # re-measure it (spends one request)
-"""
-
 from __future__ import annotations
 
 import argparse
@@ -21,10 +6,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from app import baselines, llm  # noqa: E402
-from app.dataio import load_bundled, load_ground_truth  # noqa: E402
-from app.matching import reconcile  # noqa: E402
-from app.scoring import score  # noqa: E402
+from app import baselines, llm
+from app.dataio import load_bundled, load_ground_truth
+from app.matching import reconcile
+from app.scoring import score
 
 
 def row(label: str, precision: float, recall: float, f1: float, extra: str = "") -> None:

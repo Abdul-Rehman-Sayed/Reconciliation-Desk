@@ -1,18 +1,3 @@
-"""Score the engine on datasets generated from seeds it was never tuned against.
-
-The bundled numbers come from two fixed datasets we generated, so a 100% on them
-proves the engine agrees with itself. This is the check that it generalises: nine
-fresh draws per profile, thresholds untouched.
-
-    python scripts/holdout.py                  # the pinned nine, both profiles
-    python scripts/holdout.py --seeds 1 2 3    # any other draw
-
-The seeds are pinned in this file rather than described in prose so the figure in
-the README is one command away from being checked. Case accuracy moves by a case
-or two between draws - 0.9975 is exactly 399/400 - so the number that carries the
-argument is auto-resolve precision, which is what a wrong auto-match would break.
-"""
-
 from __future__ import annotations
 
 import argparse
@@ -24,13 +9,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from app.datagen import generate  # noqa: E402
-from app.dataio import read_bank, read_ledger  # noqa: E402
-from app.matching import reconcile  # noqa: E402
-from app.scoring import score  # noqa: E402
+from app.datagen import generate
+from app.dataio import read_bank, read_ledger
+from app.matching import reconcile
+from app.scoring import score
 
-# Never used while tuning thresholds. Changing these changes the published
-# figure, so they are part of the claim.
+
 HOLDOUT_SEEDS = [101, 202, 303, 404, 505, 606, 707, 808, 909]
 
 

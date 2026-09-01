@@ -1,23 +1,3 @@
-"""
-Rule-based stand-in for the Groq call.
-
-Switched on with USE_MOCK_LLM=true. It exists for one reason: the exception
-handler is the only part of this system that costs anything, and the interface
-around it needed dozens of iterations. Iterating against this costs nothing.
-
-It is a stand-in, not a simulation. Every verdict it produces is stamped
-source="mock" and the interface labels it as such, because a templated sentence
-sitting in a field headed "what the model thinks" without that stamp would be
-the most dishonest thing in this repo.
-
-What it does share with the real call: it reads the same compact payload,
-returns the same validated shape, and lands on the same category on the bundled
-data. That is what makes it useful for building screens against - the UI under
-test sees realistic content - and it is also, usefully, the floor the real model
-has to clear. If Groq cannot beat two hundred lines of if/else at this, the LLM
-layer is not earning its place in the architecture.
-"""
-
 from __future__ import annotations
 
 from typing import Any
@@ -199,7 +179,6 @@ _HANDLERS = {
 
 
 def classify(payload: dict[str, Any]) -> dict[str, Any]:
-    """One compact exception payload in, one validated verdict out. Never raises."""
     kind = str(payload.get("engine_finding", ""))
     if kind == "unmatched_ledger":
         return _orphan(payload, "ledger")

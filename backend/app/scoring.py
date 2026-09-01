@@ -1,12 +1,3 @@
-"""
-Scores the engine against ground_truth.json.
-
-The engine never sees this file. Scoring happens strictly afterwards, which is
-the only reason the accuracy number means anything. Real production data has no
-ground truth - the API and the UI both label this as validated against a
-synthetic answer key, and that caveat is not decoration.
-"""
-
 from __future__ import annotations
 
 from itertools import product
@@ -20,7 +11,6 @@ def _pairs(link_ledger: list[str], link_stmt: list[str]) -> set[tuple[str, str]]
 
 
 def score(engine: Engine, truth: dict[str, Any]) -> dict[str, Any]:
-    # ---- what the engine claims -----------------------------------------
     engine_pairs: set[tuple[str, str]] = set()
     pair_is_auto: dict[tuple[str, str], bool] = {}
     for link in engine.links:
@@ -36,7 +26,6 @@ def score(engine: Engine, truth: dict[str, Any]) -> dict[str, Any]:
         linked_records.update(link.ledger_ids)
         linked_records.update(link.stmt_ids)
 
-    # ---- what actually happened -----------------------------------------
     expected_pairs: set[tuple[str, str]] = set()
     case_of_record: dict[str, str] = {}
     cases: dict[str, dict[str, Any]] = {}
@@ -62,7 +51,6 @@ def score(engine: Engine, truth: dict[str, Any]) -> dict[str, Any]:
     f1 = (2 * precision * recall / (precision + recall)) if (precision + recall) else 0.0
     auto_precision = len(auto_tp) / len(auto_pairs) if auto_pairs else 0.0
 
-    # ---- per-case verdicts ----------------------------------------------
     by_category: dict[str, dict[str, Any]] = {}
     case_results: list[dict[str, Any]] = []
 
@@ -94,8 +82,6 @@ def score(engine: Engine, truth: dict[str, Any]) -> dict[str, Any]:
         else:
             mode = "none"
 
-        # Some cases are only "correct" if a human was asked. Linking a short
-        # settlement is right; auto-resolving it without telling anyone is not.
         escaped_review = bool(case.get("require_human")) and mode == "auto"
 
         if wrong or orphan_linked:

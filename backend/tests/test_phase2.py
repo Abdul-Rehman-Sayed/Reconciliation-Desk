@@ -1,14 +1,3 @@
-"""Tests for the second-phase additions.
-
-Two things these are really pinning:
-
-  1. That nothing added here can spend quota by accident. The threshold route,
-     the analysis routes and the audit routes must be reachable with no key, no
-     network, and a zero call budget, and still work.
-  2. That the numbers mean what the interface says they mean - particularly the
-     auto-resolve floor, which for a while looked connected and was not.
-"""
-
 from __future__ import annotations
 
 import os
@@ -37,9 +26,6 @@ def standard():
     return ledger, bank, truth
 
 
-# ======================================================================
-# Thresholds
-# ======================================================================
 def test_thresholds_default_to_the_module_constants():
     from app import matching
 
@@ -60,7 +46,6 @@ def test_diff_from_default_reports_only_what_moved():
 
 
 def test_two_engines_at_different_tolerances_do_not_disturb_each_other(standard):
-    """The whole basis of the slider: no global state is mutated."""
     ledger, bank, _ = standard
     _, loose = reconcile(ledger, bank, DEFAULT_THRESHOLDS.replace(date_window_tolerant=0))
     _, again = reconcile(ledger, bank)
@@ -71,7 +56,6 @@ def test_two_engines_at_different_tolerances_do_not_disturb_each_other(standard)
 
 
 def test_raising_the_auto_floor_makes_the_engine_more_cautious(standard):
-    """It used to inflate the recorded confidence to meet itself and change nothing."""
     ledger, bank, _ = standard
     _, base = reconcile(ledger, bank)
     _, strict = reconcile(ledger, bank, DEFAULT_THRESHOLDS.replace(auto_resolve_floor=0.95))
@@ -81,7 +65,6 @@ def test_raising_the_auto_floor_makes_the_engine_more_cautious(standard):
 
 
 def test_raising_the_auto_floor_never_loses_a_match(standard):
-    """Demoted records move into the queue. They must not fall out of the system."""
     ledger, bank, truth = standard
     from app.scoring import score
 
@@ -92,7 +75,6 @@ def test_raising_the_auto_floor_never_loses_a_match(standard):
 
 
 def test_every_demoted_link_reaches_the_exception_queue(standard):
-    """A proposal nobody can see is not a proposal."""
     ledger, bank, _ = standard
     engine, _ = reconcile(ledger, bank, DEFAULT_THRESHOLDS.replace(auto_resolve_floor=0.95))
 
@@ -104,7 +86,6 @@ def test_every_demoted_link_reaches_the_exception_queue(standard):
 
 
 def test_the_auto_floor_can_never_promote_a_proposal(standard):
-    """Lowering it must not let a composite or fuzzy candidate commit itself."""
     ledger, bank, _ = standard
     engine, _ = reconcile(ledger, bank, DEFAULT_THRESHOLDS.replace(auto_resolve_floor=0.0))
     for link in engine.links:
@@ -119,9 +100,6 @@ def test_every_adjustable_threshold_is_a_real_field():
         assert spec["min"] <= float(Thresholds().as_dict()[spec["key"]]) <= spec["max"]
 
 
-# ======================================================================
-# Token discipline
-# ======================================================================
 def test_compact_payload_drops_what_cannot_change_a_verdict():
     exc = {
         "exception_id": "EX0001",
@@ -145,13 +123,11 @@ def test_compact_payload_drops_what_cannot_change_a_verdict():
 
     assert "status" not in compact and "decided_at" not in compact
     assert "link_id" not in compact
-    # blended_score is an internal scoring artefact, not evidence a human reasons from.
     assert "blended_score" not in compact["e"]
     assert compact["e"]["ref_similarity"] == 88.0
 
 
 def test_an_amount_delta_of_exactly_zero_survives_compaction():
-    """0.0 == False in Python, so a naive falsy filter drops the most decisive fact."""
     compact = llm._compact_evidence({"amount_delta": 0.0, "day_delta": 0})
     assert compact["amount_delta"] == 0.0
     assert compact["day_delta"] == 0
@@ -165,7 +141,6 @@ def test_the_cache_key_ignores_the_model_but_tracks_the_payload():
 
 
 def test_mock_and_live_caches_are_different_files(monkeypatch):
-    """A templated answer in the live cache would silently fake a real run."""
     monkeypatch.setenv("USE_MOCK_LLM", "true")
     mock_path = llm.cache_path()
     monkeypatch.setenv("USE_MOCK_LLM", "false")
@@ -180,13 +155,6 @@ def test_max_tokens_is_budgeted_per_record_not_per_request():
 
 
 def test_max_tokens_leaves_room_for_the_reasoning_pass():
-    """A budget sized only for the visible answer is the bug that broke this.
-
-    gpt-oss spends completion tokens thinking before it writes anything, and
-    those come out of max_tokens. A batch of 12 was measured at 366 reasoning
-    plus 909 answer; if the budget ever drops back to the answer alone, the call
-    returns 400 json_validate_failed rather than a shorter answer.
-    """
     assert llm._max_tokens_for(1) > llm.REASONING_HEADROOM
     measured_completion_for_twelve = 1275
     assert llm._max_tokens_for(12) > measured_completion_for_twelve
@@ -223,9 +191,6 @@ def test_a_spent_budget_refuses_to_call_rather_than_failing_open(monkeypatch, tm
     monkeypatch.setattr(llm, "_budget_take", lambda: False)
     monkeypatch.setattr(llm, "resolve_model", lambda force=False: "test-model")
     monkeypatch.setattr(llm, "api_key", lambda: "test-key")
-    # Point the cache at a temp file rather than stubbing _load_cache. Stubbing
-    # only the read is what emptied the real cache once - explain() still called
-    # the real _save_cache, which wrote the stub's empty view over it.
     monkeypatch.setattr(llm, "CACHE_PATH", tmp_path / "cache.json")
 
     def explode(*args, **kwargs):
@@ -247,9 +212,6 @@ def test_the_token_bucket_refuses_more_than_it_holds_then_refills():
     assert bucket.limit == 8000
 
 
-# ======================================================================
-# The rule-based stand-in
-# ======================================================================
 @pytest.mark.parametrize(
     "kind,evidence,expected",
     [
@@ -293,11 +255,7 @@ def test_the_stand_in_is_labelled_as_a_stand_in():
     assert verdict["model"] == mockllm.MODEL_NAME
 
 
-# ======================================================================
-# Analysis
-# ======================================================================
 def _explained_run(standard, monkeypatch):
-    """A run with every exception classified by the stand-in - no network."""
     monkeypatch.setenv("USE_MOCK_LLM", "true")
     ledger, bank, truth = standard
     engine, summary = reconcile(ledger, bank)
@@ -328,8 +286,6 @@ def test_confusion_scores_only_what_reached_the_model(standard, monkeypatch):
 
     assert result["scored"] > 0
     assert result["clean_matches_that_reached_the_model"] == 0
-    # Categories the engine settled before the model was asked are reported
-    # separately, not silently missing.
     assert result["cases_resolved_before_the_model"] > 0
     names = {d["ground_truth_category"] for d in result["resolved_before_the_model"]}
     assert "fee_deducted" in names and "date_shift" in names
@@ -360,8 +316,6 @@ def test_cost_split_counts_records_the_model_never_saw(standard, monkeypatch):
     assert split["records_never_seen_by_model"] + split["records_seen_by_model"] == \
         split["total_records"]
     assert 0.0 < split["share_resolved_without_model"] < 1.0
-    # A cached or mocked run measures zero tokens; the estimate keeps the
-    # comparison meaningful instead of dividing by nothing.
     assert split["estimated_cold_tokens"] > 0
 
 
@@ -376,9 +330,6 @@ def test_hours_saved_does_not_pretend_the_queue_is_free(standard, monkeypatch):
     )
 
 
-# ======================================================================
-# Baselines
-# ======================================================================
 def test_the_naive_join_is_precise_and_incomplete(standard):
     ledger, bank, truth = standard
     result = baselines.naive_join(ledger, bank, truth)
@@ -399,7 +350,6 @@ def test_the_layered_engine_beats_the_naive_join_on_recall(standard):
 
 
 def test_the_llm_only_baseline_is_never_measured_on_a_request_path(standard, monkeypatch):
-    """bundle() is what the API calls. It must only ever read the frozen file."""
     ledger, bank, truth = standard
 
     def explode(*args, **kwargs):
@@ -411,9 +361,6 @@ def test_the_llm_only_baseline_is_never_measured_on_a_request_path(standard, mon
     assert result["naive"]["precision"] == 1.0
 
 
-# ======================================================================
-# Provenance and audit
-# ======================================================================
 def test_provenance_names_the_rule_that_resolved_a_record(standard, monkeypatch):
     run, _ = _explained_run(standard, monkeypatch)
     matched = next(l for l in run["links"] if l["auto_resolved"])
@@ -432,7 +379,6 @@ def test_provenance_is_none_for_a_record_not_in_the_run(standard, monkeypatch):
 
 
 def test_every_rule_the_engine_can_fire_has_a_description(standard):
-    """A link whose method has no entry would show a blank provenance panel."""
     ledger, bank, _ = standard
     engine, _ = reconcile(ledger, bank)
     for link in engine.links:
@@ -476,9 +422,6 @@ def test_the_audit_csv_has_one_header_and_a_row_per_decision(standard, monkeypat
     assert len(lines) - 1 == len(audit.audit_rows(run))
 
 
-# ======================================================================
-# Razorpay adapter
-# ======================================================================
 RECON_ROW = {
     "entity_id": "pay_DEXrnipqTmWVGE", "type": "payment", "debit": "0", "credit": "97100",
     "amount": "100000", "currency": "INR", "fee": "2900", "tax": "0", "on_hold": "false",
@@ -498,12 +441,11 @@ def test_the_adapter_recognises_a_recon_report_and_not_our_own_csv():
 
 def test_amounts_are_converted_from_paise():
     row = razorpay.to_ledger_rows([RECON_ROW])[0]
-    assert row["amount"] == 971.00        # credit 97100 paise, not 97100 rupees
+    assert row["amount"] == 971.00
 
 
 def test_the_settlement_date_is_used_not_the_creation_date():
     row = razorpay.to_ledger_rows([RECON_ROW])[0]
-    # settled_at 1568176960 is 2019-09-11; created_at 1567692556 is 2019-09-05.
     assert row["date"] == "2019-09-11"
 
 
@@ -514,7 +456,6 @@ def test_a_refund_becomes_a_negative_amount():
 
 
 def test_the_utr_is_never_used_as_the_join_key():
-    """The bank statement carries the correspondent bank's reference, not this one."""
     row = razorpay.to_ledger_rows([RECON_ROW])[0]
     assert row["reference_number"] == "order_DEXrnRiR3SNDHA"
     assert RECON_ROW["settlement_utr"] not in row["reference_number"]
@@ -529,7 +470,6 @@ def test_transactions_group_into_settlement_batches():
 
 
 def test_saving_a_partial_view_cannot_truncate_the_cache(monkeypatch, tmp_path):
-    """The regression that emptied a cache of real, paid-for verdicts."""
     path = tmp_path / "cache.json"
     monkeypatch.setattr(llm, "CACHE_PATH", path)
     monkeypatch.setenv("USE_MOCK_LLM", "false")
@@ -537,7 +477,6 @@ def test_saving_a_partial_view_cannot_truncate_the_cache(monkeypatch, tmp_path):
     llm._save_cache({"a": {"source": "groq"}, "b": {"source": "groq"}})
     assert len(llm._load_cache()) == 2
 
-    # A process that only ever saw one entry saves what it has.
     llm._save_cache({"c": {"source": "groq"}})
     assert set(llm._load_cache()) == {"a", "b", "c"}
 

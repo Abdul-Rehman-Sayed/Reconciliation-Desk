@@ -1,30 +1,10 @@
-"""
-Provenance and the audit log.
-
-Two questions an auditor asks about an automated reconciliation, and this module
-is the answer to both:
-
-    "Why is this pair matched?"     -> provenance()
-    "Show me everything you did."   -> audit_rows()
-
-Neither costs a model call. Every fact in here was produced by the deterministic
-engine and written down at the time it happened, which is the only way this
-holds up: an explanation reconstructed after the fact is a story, not a record.
-"""
-
 from __future__ import annotations
 
 import csv
 import io
 from typing import Any
 
-# --------------------------------------------------------------------------
-# What each rule actually asserts.
-#
-# Keyed by Link.method. The engine records which rule fired; this says, in
-# words an operations person can read back to an auditor, what that rule
-# claims and what it needed to see before it would claim it.
-# --------------------------------------------------------------------------
+
 RULES: dict[str, dict[str, Any]] = {
     "exact_reference_amount_date": {
         "pass": "1 - exact",
@@ -39,7 +19,7 @@ RULES: dict[str, dict[str, Any]] = {
         "auto": True,
     },
     "amount_rounding": {
-        "pass": "2 - tolerant",
+        "pass": "3 - tolerant",
         "title": "Same reference, amount differs only by rounding",
         "asserts": "Same transaction; the difference is a rounding artefact.",
         "requires": [
@@ -50,7 +30,7 @@ RULES: dict[str, dict[str, Any]] = {
         "auto": True,
     },
     "date_delay": {
-        "pass": "2 - tolerant",
+        "pass": "3 - tolerant",
         "title": "Same reference and amount, settled later",
         "asserts": "Same transaction, delayed in settlement.",
         "requires": [
@@ -61,7 +41,7 @@ RULES: dict[str, dict[str, Any]] = {
         "auto": True,
     },
     "fee_adjusted": {
-        "pass": "2 - tolerant",
+        "pass": "3 - tolerant",
         "title": "Amount short by a recognisable gateway fee",
         "asserts": "Same transaction; the bank credited the amount net of fee.",
         "requires": [
@@ -72,7 +52,7 @@ RULES: dict[str, dict[str, Any]] = {
         "auto": True,
     },
     "late_settlement": {
-        "pass": "2 - tolerant",
+        "pass": "3 - tolerant",
         "title": "Same reference and amount, well outside the date window",
         "asserts": "Same transaction; the settlement took unusually long.",
         "requires": [
@@ -84,7 +64,7 @@ RULES: dict[str, dict[str, Any]] = {
         "auto": True,
     },
     "refund_reversal": {
-        "pass": "2b - reversals",
+        "pass": "2 - reversals",
         "title": "Refund paired to the payment it cancels",
         "asserts": "These two net to zero against an earlier payment.",
         "requires": [
@@ -96,7 +76,7 @@ RULES: dict[str, dict[str, Any]] = {
         "auto": True,
     },
     "composite_many_to_one": {
-        "pass": "4 - composite",
+        "pass": "5 - composite",
         "title": "Several ledger rows settled as one bank line",
         "asserts": "Proposed only. These rows sum to the bank credit.",
         "requires": [
@@ -107,7 +87,7 @@ RULES: dict[str, dict[str, Any]] = {
         "auto": False,
     },
     "composite_one_to_many": {
-        "pass": "4 - composite",
+        "pass": "5 - composite",
         "title": "One ledger payout left as several bank lines",
         "asserts": "Proposed only. These bank rows sum to the ledger payout.",
         "requires": [
@@ -118,7 +98,7 @@ RULES: dict[str, dict[str, Any]] = {
         "auto": False,
     },
     "fuzzy_reference": {
-        "pass": "5 - fuzzy",
+        "pass": "6 - fuzzy",
         "title": "Damaged reference scored against amount and date",
         "asserts": "Proposed only. Best available candidate, not a proof.",
         "requires": [
@@ -130,10 +110,10 @@ RULES: dict[str, dict[str, Any]] = {
     },
 }
 
-# Exception kinds that are not links - the engine's finding stands on its own.
+
 KIND_RULES: dict[str, dict[str, Any]] = {
     "duplicate": {
-        "pass": "3 - duplicates",
+        "pass": "4 - duplicates",
         "title": "Same-side repeat",
         "asserts": "This row repeats an earlier row on its own side of the book.",
         "requires": [
@@ -154,24 +134,23 @@ KIND_RULES: dict[str, dict[str, Any]] = {
         "auto": False,
     },
     "unmatched_ledger": {
-        "pass": "6 - remainder",
+        "pass": "remainder",
         "title": "Recorded but never settled",
         "asserts": "Nothing on the statement could be this ledger row.",
-        "requires": ["Survived all five preceding passes"],
+        "requires": ["Survived all six preceding passes"],
         "auto": False,
     },
     "unmatched_bank": {
-        "pass": "6 - remainder",
+        "pass": "remainder",
         "title": "Settled but unexplained",
         "asserts": "No ledger entry stands behind this bank row.",
-        "requires": ["Survived all five preceding passes"],
+        "requires": ["Survived all six preceding passes"],
         "auto": False,
     },
 }
 
 
-def _evidence_lines(method: str, evidence: dict[str, Any]) -> list[str]:
-    """The rule's requirements restated against the numbers this pair actually had."""
+def _evidence_lines(evidence: dict[str, Any]) -> list[str]:
     ev = evidence or {}
     out: list[str] = []
 
@@ -213,10 +192,6 @@ def _evidence_lines(method: str, evidence: dict[str, Any]) -> list[str]:
 
 
 def provenance(run: dict[str, Any], record_id: str) -> dict[str, Any] | None:
-    """Everything known about how one record was resolved.
-
-    Returns None if the id is not in this run at all.
-    """
     lookup = {r["id"]: r for r in run["records"]["ledger"] + run["records"]["bank"]}
     record = lookup.get(record_id)
     if record is None:
@@ -253,11 +228,10 @@ def provenance(run: dict[str, Any], record_id: str) -> dict[str, Any] | None:
             "outcome": "auto_resolved" if link["auto_resolved"] else "proposed",
             "link": link,
             "rule": {"method": link["method"], **rule},
-            "why": _evidence_lines(link["method"], link.get("evidence", {})),
+            "why": _evidence_lines(link.get("evidence", {})),
             "counterparts": [lookup[i] for i in counterpart_ids if i in lookup],
         })
-        # Which passes ran before the one that caught it, and therefore looked
-        # at this record and declined it. Ordering is the engine's own.
+
         order = ["exact", "refund", "tolerant", "duplicates", "composite", "fuzzy", "remainder"]
         if link["pass_name"] in order:
             out["passes_that_declined"] = order[: order.index(link["pass_name"])]
@@ -278,7 +252,7 @@ def provenance(run: dict[str, Any], record_id: str) -> dict[str, Any] | None:
         if out["rule"] is None and kind_rule:
             out["outcome"] = ("flagged" if exception["kind"] == "duplicate" else "unresolved")
             out["rule"] = {"method": exception["kind"], **kind_rule}
-            out["why"] = _evidence_lines(exception["kind"], exception.get("evidence", {}))
+            out["why"] = _evidence_lines(exception.get("evidence", {}))
             if exception["kind"] in ("unmatched_ledger", "unmatched_bank"):
                 out["passes_that_declined"] = ["exact", "refund", "tolerant", "duplicates",
                                                "composite", "fuzzy"]
@@ -286,9 +260,6 @@ def provenance(run: dict[str, Any], record_id: str) -> dict[str, Any] | None:
     return out
 
 
-# --------------------------------------------------------------------------
-# The audit log
-# --------------------------------------------------------------------------
 AUDIT_COLUMNS = [
     "run_id", "dataset", "event", "at", "record_ids", "ledger_ids", "bank_ids",
     "amount", "pass", "method", "rule_asserts", "confidence", "auto_resolved",
@@ -298,18 +269,6 @@ AUDIT_COLUMNS = [
 
 
 def audit_rows(run: dict[str, Any]) -> list[dict[str, Any]]:
-    """One row per decision this system made or was told to make.
-
-    Three event types:
-      auto_resolved  the engine committed a match with no human involved
-      proposed       the engine found a candidate and refused to commit it
-      exception      something a person has to look at
-      human_action   a person decided
-
-    A human_action row is emitted in addition to the exception row it decides,
-    not instead of it, because an audit trail that overwrites the original
-    finding with the decision loses the thing being audited.
-    """
     lookup = {r["id"]: r for r in run["records"]["ledger"] + run["records"]["bank"]}
     dataset = run.get("dataset_profile", "")
     run_id = run.get("run_id", "")
@@ -333,7 +292,7 @@ def audit_rows(run: dict[str, Any]) -> list[dict[str, Any]]:
             "ledger_ids": " ".join(link["ledger_ids"]),
             "bank_ids": " ".join(link["stmt_ids"]),
             "amount": amount_of(link["ledger_ids"]) or amount_of(link["stmt_ids"]),
-            "pass": link["pass_name"],
+            "pass": rule.get("pass", link["pass_name"]),
             "method": link["method"],
             "rule_asserts": rule.get("asserts", ""),
             "confidence": link["confidence"],
@@ -351,7 +310,7 @@ def audit_rows(run: dict[str, Any]) -> list[dict[str, Any]]:
 
     for exc in run["exceptions"]:
         if exc.get("link_id"):
-            continue      # already represented by its link row above
+            continue
         kind_rule = KIND_RULES.get(exc["kind"], {})
         ids = exc["ledger_ids"] + exc["stmt_ids"]
         llm_block = exc.get("llm") or {}
@@ -380,7 +339,6 @@ def audit_rows(run: dict[str, Any]) -> list[dict[str, Any]]:
             "human_note": "",
         })
 
-    # Human decisions, newest last, from the append-only event list.
     for event in run.get("audit_events", []):
         exc = next((e for e in run["exceptions"]
                     if e["exception_id"] == event.get("exception_id")), None)

@@ -20,7 +20,6 @@ import { EvidenceScreen } from './components/EvidenceScreen'
 
 type Screen = 'landing' | 'start' | 'processing' | 'summary' | 'evidence' | 'exceptions'
 
-/** One source of truth for the flow. The rail and the mobile bar both read it. */
 const STEPS: [Screen, string][] = [
   ['start', 'Load'],
   ['processing', 'Match'],
@@ -71,14 +70,10 @@ export default function App() {
       setReused(res.reused)
       setScreen('processing')
 
-      // The model runs only after the deterministic passes have all landed.
-      // If this run was reused, its verdicts came back with it and explain()
-      // short-circuits on already_done - so a repeat run costs nothing at all.
       setLlmPhase('running')
       try {
         await api.explain(id)
       } catch {
-        /* explain() already degrades honestly; the summary refresh shows it */
       }
       const after = await api.summary(id)
       setSummary(after)
@@ -99,16 +94,22 @@ export default function App() {
     setLinks([])
     setLlmPhase('idle')
     setReused(false)
+    setError(null)
   }
 
-  /** A threshold change commits a derived run; swap to it in place. */
   const adoptRun = useCallback(async (id: string) => {
-    const [full, recs] = await Promise.all([api.summary(id), api.records(id)])
-    setRunId(id)
-    setSummary(full)
-    setLedger(recs.ledger)
-    setBank(recs.bank)
-    setLinks(recs.links)
+    try {
+      const [full, recs] = await Promise.all([api.summary(id), api.records(id)])
+      setRunId(id)
+      setSummary(full)
+      setLedger(recs.ledger)
+      setBank(recs.bank)
+      setLinks(recs.links)
+      setError(null)
+    } catch (e) {
+      setError((e as Error).message)
+      return
+    }
     try {
       setAccuracy(await api.accuracy(id))
     } catch {
@@ -116,11 +117,6 @@ export default function App() {
     }
   }, [])
 
-  // The landing page sits in front of the app rather than inside it, so it gets
-  // the window to itself - no rail, no step bar, no status strip. It is also
-  // deliberately absent from STEPS: it is not a stage of the run, and showing it
-  // as step zero would imply you can navigate back to it mid-reconciliation and
-  // still have one.
   if (screen === 'landing') {
     return <LandingScreen onEnter={() => setScreen('start')} />
   }
@@ -144,9 +140,6 @@ export default function App() {
           reused={reused}
         />
 
-        {/* Below md the rail is gone, so the flow needs somewhere else to live.
-            Scrolls horizontally rather than wrapping - five steps on a narrow
-            phone would otherwise take two rows and push the content down. */}
         <StepBar
           screen={screen}
           enabled={Boolean(summary)}
@@ -214,7 +207,6 @@ export default function App() {
   )
 }
 
-/* ------------------------------------------------------------------ rail */
 function Rail({
   screen,
   summary,
@@ -327,7 +319,6 @@ function Rail({
   )
 }
 
-/* ------------------------------------------------------- mobile step bar */
 function StepBar({
   screen,
   enabled,
@@ -400,7 +391,6 @@ function RailRow({ k, v, tone = 'text-ink' }: { k: string; v: string; tone?: str
   )
 }
 
-/** Two columns, one rule between them. The whole problem in nine strokes. */
 function Mark() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
@@ -415,7 +405,6 @@ function Mark() {
   )
 }
 
-/* ---------------------------------------------------------- status strip */
 function StatusStrip({
   summary,
   health,
@@ -429,18 +418,11 @@ function StatusStrip({
 }) {
   const stats = summary?.llm_stats
   const mock = health?.mock_mode || stats?.mode === 'mock'
-  // Which of these is true changes what the reader should trust, so the strip
-  // says which one rather than showing a generic green dot.
   const modelLabel = mock
     ? 'stand-in · no model called'
     : health?.groq_reachable
-      ? `groq · ${health.groq_model ?? 'ready'}${llmPhase === 'running' ? ' · calling' : ''}`
-      : 'groq · no key'
-  // Exceptions the model was asked about and did not answer. These carry a
-  // real engine finding and still need a person, so they are not a silent
-  // subset - but nothing else on this screen distinguishes them from a verdict
-  // the model actually returned, which is exactly how a run where Groq answered
-  // 1 of 66 once read as a clean pass.
+      ? llmPhase === 'running' ? 'assistant · calling' : 'assistant · ready'
+      : 'assistant · not connected'
   const unanswered = stats ? Math.max(0, stats.requested - stats.answered) : 0
   const degraded = !mock && llmPhase === 'done' && unanswered > 0
   const tone = mock || degraded

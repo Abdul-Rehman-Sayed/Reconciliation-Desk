@@ -5,10 +5,8 @@ __pycache__/
 .venv/
 venv/
 
-# Secrets - never commit a real key
 .env
 
-# Per-run artefacts (the bundled datasets in backend/data/{standard,stress} ARE committed)
 backend/data/runs/
 
 # Machine-local state
@@ -30,3 +28,6 @@ dist/
 # OS
 .DS_Store
 Thumbs.db
+
+working.md
+pitch.md

@@ -1,32 +1,3 @@
-"""Read this account's real rate limits off Groq's response headers.
-
-The published free-tier table is a starting point, not an answer: limits differ
-by model, they change, and an account can carry exceptions. Groq returns the
-actual numbers on every response, so this asks rather than assumes.
-
-It costs one request per model with max_tokens=1 - about ten tokens each. That
-is a rounding error against a 200,000 token daily allowance and it is the only
-way to know which model to prefer.
-
-    python scripts/check_limits.py              # every chat model on the account
-    python scripts/check_limits.py --model X    # just one
-
-What the headers mean, which is not obvious:
-
-  x-ratelimit-limit-requests   the DAILY request ceiling (RPD), not per-minute
-  x-ratelimit-limit-tokens     the per-minute token ceiling (TPM)
-  x-ratelimit-reset-*          time to refill what has been consumed, because
-                               both limits are token buckets that refill
-                               continuously rather than resetting at midnight
-
-The TPM bucket is the one that bites. Groq reserves `max_tokens` against it at
-admission, so a request asking for a long completion consumes that whole
-allowance up front whether or not the model uses it. Three concurrent calls with
-max_tokens=2000 reserve 6,000 tokens against an 8,000 bucket before a single
-token is generated - which is how this project got four 429s out of seven calls
-before the exception handler was rewritten.
-"""
-
 from __future__ import annotations
 
 import argparse
@@ -37,7 +8,7 @@ import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from app import llm  # noqa: E402
+from app import llm
 
 SKIP = ("whisper", "tts", "guard", "orpheus", "safeguard")
 
@@ -77,7 +48,7 @@ def main() -> None:
 
     try:
         available = llm.list_models()
-    except Exception as exc:                              # noqa: BLE001
+    except Exception as exc:
         print("\n  could not list models: %s\n" % str(exc)[:200])
         return
 

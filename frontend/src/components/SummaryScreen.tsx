@@ -27,10 +27,6 @@ import { CountUp, Panel, Stat, Tag } from './bits'
 import { CanvasLegend, MatchCanvas } from './MatchCanvas'
 import { ProvenancePanel } from './ProvenancePanel'
 
-/* Chart-only status fills, re-stepped from the same hues as the text tokens.
-   The ink colours are tuned for type on a pale sheet and read too gray as
-   fills; these are validated for lightness, chroma, CVD separation and
-   normal-vision separation against the #F7F9F5 sheet. */
 const FILL = {
   correct: '#0F7A5A',
   missed: '#D08A00',
@@ -61,10 +57,6 @@ export function SummaryScreen({
   const [inspecting, setInspecting] = useState<AnyRecord | null>(null)
   const [cost, setCost] = useState<CostResponse | null>(null)
 
-  // The cost split is only meaningful once the model has been asked - before
-  // that the token and call figures are zero because nothing has happened yet,
-  // which is a different zero from "served from cache" and would read the same.
-  // So this waits for llm_complete rather than firing on mount.
   const llmDone = summary.llm_complete
   useEffect(() => {
     if (!runId || !llmDone) return
@@ -74,8 +66,6 @@ export function SummaryScreen({
         if (live) setCost(c)
       },
       () => {
-        // A missing cost split is not worth an error state here - everything
-        // above it is already on the page and still true without it.
       },
     )
     return () => {
@@ -83,11 +73,6 @@ export function SummaryScreen({
     }
   }, [runId, llmDone])
 
-  // Derived, not cleared in an effect. A threshold change swaps this screen to
-  // a *derived run* while the previous run's cost is still in state, and an
-  // effect that clears it runs after the first paint - so for one frame the old
-  // token count would sit under the new run's match rate. Matching on run_id
-  // means the ticker is either this run's or absent.
   const shownCost = cost && cost.run_id === runId && llmDone ? cost : null
 
   return (
@@ -150,7 +135,6 @@ export function SummaryScreen({
   )
 }
 
-/* ------------------------------------------------------------------ hero */
 function Headline({
   summary,
   onReview,
@@ -203,7 +187,6 @@ function Headline({
         </div>
       </div>
 
-      {/* the gap between the two numbers, drawn to scale */}
       <div className="mt-5">
         <div className="flex h-[26px] w-full overflow-hidden rounded-[2px] bg-bar">
           <Segment
@@ -275,14 +258,6 @@ function Headline({
   )
 }
 
-/**
- * Which set produced these numbers.
- *
- * Read off the run rather than off whatever the start screen had selected. A
- * threshold change adopts a *derived* run, and after that the toggle's state is
- * a record of what someone last clicked, not of what these figures came from.
- * The run knows; ask the run.
- */
 function DatasetBadge({ profile }: { profile: string }) {
   if (profile === 'uploaded') return <Tag tone="slate">your files · no answer key</Tag>
   if (profile === 'stress') return <Tag tone="ochre">Adversarial set</Tag>
@@ -290,26 +265,6 @@ function DatasetBadge({ profile }: { profile: string }) {
   return <Tag tone="slate">{humanise(profile)}</Tag>
 }
 
-/* ---------------------------------------------------------------- ticker */
-/**
- * What the layering actually cost, counted up.
- *
- * The awkward figure here is zero, and it means three different things:
- *
- *   mock mode      no model was called at all, so the token count is not a
- *                  measurement of anything and must not be dressed as one
- *   fully cached   a real run whose verdicts all came from disk. Zero is the
- *                  true answer and it is the good news, not a missing value
- *   cold run       the only case where the measured token figure is real
- *
- * Animating a bare "0 tokens" would read identically in all three. So when the
- * backend says `tokens_measured: false` this shows the cold cost the same batch
- * *would* have carried - a figure the API already computes for exactly this
- * reason - and labels it an estimate rather than passing it off as measured.
- *
- * Hours saved is the one figure that is real in every mode: it comes off the
- * record counts and the queue size, and no model is involved in either.
- */
 function CostTicker({ cost }: { cost: CostResponse }) {
   const { split, hours: saved } = cost
   const mock = split.mode === 'mock'
@@ -335,13 +290,9 @@ function CostTicker({ cost }: { cost: CostResponse }) {
         <div className="flex flex-wrap items-center gap-1.5">
           {mock && <Tag tone="ochre">stand-in · no model called</Tag>}
           {!measured && <Tag tone="slate">tokens estimated</Tag>}
-          {split.model && (
-            <span className="num text-[10px] text-mute">{split.model}</span>
-          )}
         </div>
       </header>
 
-      {/* Three figures, ruled apart like columns on a statement. */}
       <div className="grid grid-cols-1 divide-y divide-rule sm:grid-cols-3 sm:divide-x sm:divide-y-0">
         <Tile
           label="Requests to the model"
@@ -442,10 +393,7 @@ function Segment({
   )
 }
 
-/* -------------------------------------------------------- pass breakdown */
 function PassBreakdown({ summary }: { summary: Summary }) {
-  // Two of the passes resolve nothing by linking - they raise exceptions instead.
-  // Plotting their link count would draw an empty bar next to real work.
   const rows = summary.passes
     .filter((p) => p.links_made > 0 || p.exceptions_raised > 0)
     .map((p) => ({
@@ -494,7 +442,6 @@ function PassBreakdown({ summary }: { summary: Summary }) {
   )
 }
 
-/* ------------------------------------------------------- queue breakdown */
 function QueueBreakdown({ summary, onReview }: { summary: Summary; onReview: () => void }) {
   const entries = Object.entries(summary.exceptions_by_kind).sort((a, b) => b[1] - a[1])
   const total = summary.exceptions_total || 1
@@ -537,11 +484,7 @@ function QueueBreakdown({ summary, onReview }: { summary: Summary; onReview: () 
   )
 }
 
-/* ----------------------------------------------------------- accuracy */
 function AccuracyPanel({ accuracy, summary }: { accuracy: Accuracy; summary: Summary }) {
-  // The category axis carries a label and a percentage. Below ~640px there is
-  // not room for both at full width, so the labels truncate harder instead of
-  // squeezing the plot area to nothing.
   const narrow = useIsNarrow(640)
   const data = accuracy.by_category.map((c) => ({
     name: humanise(c.category),
@@ -711,9 +654,6 @@ function AccuracyPanel({ accuracy, summary }: { accuracy: Accuracy; summary: Sum
   )
 }
 
-/* Recharts hands a custom tick every axis prop it holds, typed loosely - x and
-   y arrive as `string | number`. Narrowing them here rather than at the call
-   site keeps the JSX readable and the component honest about what it receives. */
 function CategoryTick({
   x,
   y,

@@ -28,13 +28,13 @@ working only on what the previous ones left behind: exact reference/amount/date
 matching; a tolerant pass that understands gateway-fee formulas, T+3 delays and
 single-character reference drift; reversal pairing; same-side duplicate detection;
 composite matching for N-rows-settle-as-one; and fuzzy reference scoring. On the
-bundled data this resolves **90%** of all records on its own, in about 25
-milliseconds, with no model involved. Every threshold it uses is a named constant at
+bundled data this resolves **90%** of all records on its own, in well under a tenth
+of a second, with no model involved. Every threshold it uses is a named constant at
 the top of the module, not a magic number buried in a conditional.
 
 **2 · An LLM that only sees what survived.** [`backend/app/llm.py`](backend/app/llm.py)
-calls Groq, and it is asked about **32 of 856 records** — under 4% of the batch. It
-never sees a clean match. Its job is narrow and it is held to it by a JSON schema:
+calls Groq, and it is asked about **32 exception groups covering 84 of 856
+records** — under 10% of the batch. It never sees a clean match. Its job is narrow and it is held to it by a JSON schema:
 classify the exception, explain the likely cause in language an ops person can read,
 propose an action, and return its own confidence. It classifies and explains. It does
 not resolve. The prompt makes *"there is genuinely nothing to match this to"* a
@@ -67,7 +67,7 @@ Reproduce them with `python scripts/evaluate.py` and `--profile stress`.
 | Exceptions raised — *groups, see below* | 52 | 86 |
 | — the records those groups cover | 104 | 169 |
 | — of those groups, sent to the LLM | 32 | 66 |
-| Deterministic engine time | 23 ms | 32 ms |
+| Deterministic engine time | under 0.1 s | under 0.1 s |
 | Case accuracy vs ground truth | 100.00% | 100.00% |
 | Pair precision / recall | 100% / 100% | 100% / 100% |
 | **Auto-resolve precision** | **100.00%** | **100.00%** |
@@ -79,9 +79,8 @@ exceptions cover 104 records on the standard set. The two are printed in separat
 blocks by `scripts/evaluate.py` for that reason, and `summary.exception_records`
 carries the record figure in the API. Duplicates compound it: a flagged duplicate is
 counted as auto-resolved *and* raises an exception, because the rule resolved it and a
-person should still see it. The partition is asserted against both bundled datasets in
-`tests/test_matching.py`, and `summary.accounting_overlap` reports a violation rather
-than absorbing one.
+person should still see it. The partition holds on both bundled datasets, and
+`summary.accounting_overlap` reports a violation rather than absorbing one.
 
 **The number that matters is the first one, and the second one is why.** The gap
 between 83% and 99% on the adversarial set is 141 records the engine found a
@@ -121,7 +120,7 @@ Precision and recall per flaw category rather than one blended number, scored ag
 the injected flaw — `GET /api/runs/{id}/confusion`.
 
 The matrix is deliberately narrow, and that is the argument rather than a gap in the
-testing: **120 of the 400 cases never reach the model at all.** A gateway fee, a
+measurement: **120 of the 400 cases never reach the model at all.** A gateway fee, a
 settlement delay, a double webhook fire and a reversal are each resolved by a rule,
 with a proof, before anything is asked of an LLM. Only split payments, damaged
 references and genuine orphans get that far.
@@ -255,13 +254,14 @@ What changed, in order of how much each actually saved:
    the repo on purpose — those verdicts were paid for once, and a fresh clone
    should not pay for them twice.
 
-   **What is actually in the committed cache today: 12 verdicts, one batch.** That
-   covers 12 of the standard set's 32 exceptions and none of the adversarial set's
-   66. So a cold *real* run is not free — it is 2 requests on standard and 6 on
-   adversarial, against a 1,000/day allowance. Stated rather than rounded to "free"
-   because a demo that assumes zero and needs eight is a demo that discovers its
-   own rate limit on stage. `USE_MOCK_LLM=true` (the committed default) reads a
-   separate cache that does cover both sets in full, at no cost and no network.
+   **What is actually in the committed cache today: 79 verdicts.** That covers 11
+   of the standard set's 32 exceptions and 62 of the adversarial set's 66. So a cold
+   *real* run is not free — it is 2 requests on standard and 1 on adversarial,
+   against a 1,000/day allowance. Stated rather than rounded to "free" because a
+   demo that assumes zero and needs three is a demo that discovers its own rate
+   limit on stage. `USE_MOCK_LLM=true` (the committed default) reads a separate
+   cache and never touches the network at all: anything not already in it is
+   generated locally by the rule-based stand-in, at no cost.
 2. **A client-side token bucket mirroring Groq's own.** Requests wait for capacity
    here rather than being rejected there. A 429 costs a request out of the daily
    allowance and returns nothing; waiting 400 ms costs nothing.
@@ -278,7 +278,7 @@ Ask what a run would cost before spending it:
 
 ```bash
 curl -X POST 'localhost:8000/api/runs/{id}/explain?dry_run=true'
-# real mode:  {"exceptions": 32, "already_cached": 12, "would_call_for": 20, "would_cost_requests": 2}
+# real mode:  {"exceptions": 32, "already_cached": 11, "would_call_for": 21, "would_cost_requests": 2}
 # mock mode:  {"exceptions": 32, "already_cached": 32, "would_call_for":  0, "would_cost_requests": 0}
 ```
 
@@ -298,11 +298,10 @@ npm run dev          # http://localhost:5173
 Vite proxies `/api` to `127.0.0.1:8000`, and FastAPI also sets CORS for `:5173`, so
 either path works.
 
-### Tests and evaluation
+### Evaluation
 
 ```bash
 cd backend
-python -m pytest tests/ -q                     # 78 tests: matching tiers + phase 2
 python scripts/evaluate.py                     # engine + accuracy, standard set
 python scripts/evaluate.py --profile stress -v  # adversarial set, every imperfect case
 python scripts/baseline.py                     # naive vs layered, free
@@ -313,9 +312,8 @@ python scripts/migrate_cache.py --write        # recover paid-for verdicts after
 python scripts/generate_data.py --seed 99 --stress --out data/stress   # fresh batch
 ```
 
-Nothing in the test suite makes a network call. Several tests assert that: mock mode
-monkeypatches `requests.post` to raise, and the budget test asserts that a spent
-budget refuses to call rather than failing open.
+Every script above is free except `baseline.py --llm`. A spent daily budget refuses
+to call rather than failing open.
 
 ---
 
@@ -340,16 +338,15 @@ backend/
     standard/       ledger.csv · bank_statement.csv · ground_truth.json   (seed 20260822)
     stress/         same three files, adversarial mix                     (seed 4242)
     baselines/      the frozen LLM-only measurement, committed
-    llm_cache.json  real Groq verdicts, committed — 12 of them, so a cold real
+    llm_cache.json  real Groq verdicts, committed — 79 of them, so a cold real
                     run on the standard set is 2 requests, not 0
   scripts/          generate_data · evaluate · baseline · holdout · check_groq ·
                     check_limits · migrate_cache
-  tests/            test_matching.py · test_phase2.py
 docs/
   ADR-001-layered-reconciliation.md   rules vs ML vs LLM vs layered, one line of tradeoff each
 frontend/
-  src/components/   StartScreen · Processing · SummaryScreen · EvidenceScreen ·
-                    MatchCanvas · ThresholdPanel · ProvenancePanel ·
+  src/components/   LandingScreen · StartScreen · Processing · SummaryScreen ·
+                    EvidenceScreen · MatchCanvas · ThresholdPanel · ProvenancePanel ·
                     ExceptionsScreen · ExceptionDetail · bits (shared primitives)
   src/lib/          api (typed client) · format · useIsNarrow
 ```
@@ -392,10 +389,20 @@ and dodged the point.
 | `GET /api/health` | includes a live Groq reachability check |
 | `GET /api/datasets` | the bundled datasets, described from the files themselves |
 | `GET /api/models` | Groq's live model list and which one was selected |
+| `GET /api/thresholds` | which thresholds are adjustable, with bounds and defaults |
 | `POST /api/reconcile?dataset=standard\|stress` | deterministic passes only; or upload two CSVs |
 | `POST /api/runs/{id}/explain` | sends the surviving exceptions to Groq |
+| `POST /api/runs/{id}/explain?dry_run=true` | what that call would cost, without making it |
+| `POST /api/runs/{id}/thresholds` | re-run at new tolerances; free, no model call |
+| `POST /api/runs/{id}/thresholds/explain` | commit a threshold change and classify the new queue |
 | `GET /api/runs/{id}/summary` | counts, both match rates, per-pass timings |
 | `GET /api/runs/{id}/accuracy` | scored against ground truth; **404 for uploads, by design** |
+| `GET /api/runs/{id}/confusion` | per-category precision/recall against the injected flaw |
+| `GET /api/runs/{id}/calibration` | stated confidence binned against measured accuracy |
+| `GET /api/runs/{id}/cost` | token split, cache hit rate, hours saved |
+| `GET /api/runs/{id}/baselines` | naive join and the frozen LLM-only measurement |
+| `GET /api/runs/{id}/provenance/{record_id}` | which rule decided this record, and on what evidence |
+| `GET /api/runs/{id}/audit?format=json\|csv` | the exportable audit log |
 | `GET /api/runs/{id}/exceptions` | paginated, filterable by kind / category / confidence / state |
 | `POST /api/runs/{id}/exceptions/{id}/action` | the human gate |
 | `GET /api/runs/{id}/records` | both sides plus every link, for the two-column view |
@@ -448,8 +455,8 @@ columns are date-sorted, so a healthy run reads as a near-diagonal weave and **t
 rows with no line attached are the exceptions**. During processing the lines draw
 themselves pass by pass, which is the architecture made literal.
 
-The processing sequence is paced so it can be read — the engine finishes in ~25ms,
-which is too fast to see. The real millisecond figure for each pass is printed next
+The processing sequence is paced so it can be read — the engine finishes far too
+fast to watch. The real millisecond figure for each pass is printed next
 to it precisely so the pacing cannot be mistaken for the timing.
 
 The status-tile colours in the accuracy chart are re-stepped from the same hues as
@@ -529,7 +536,7 @@ half-done here.
 - The LLM-only baseline is one measurement on 40 records, so its 95% precision figure
   carries the uncertainty of a single small sample. It is enough to show the shape of
   the tradeoff; it is not a benchmark.
-- The confusion matrix scores only the ~8% of records that reach the model. That is
+- The confusion matrix scores only the ~10% of records that reach the model. That is
   the design working, but it means the classifier's per-category numbers rest on small
   support — 4 to 16 cases per category on the standard set.
 - Threshold previews run on bundled datasets only, because they need the original rows

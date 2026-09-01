@@ -1,29 +1,3 @@
-"""
-What the layered engine is actually better than.
-
-A match rate with nothing beside it is not a result, it is a number. Two
-baselines give it a shape:
-
-  1. **Naive rules.** An exact join on reference and amount - the twenty lines
-     of pandas that every finance team has already written in a spreadsheet
-     macro. This is the honest floor. If the layered engine is not meaningfully
-     above it, six passes were not worth building.
-
-  2. **LLM decides everything.** No deterministic layer at all: both sides go
-     to the model and it returns the pairings. This is the version a demo gets
-     built as when nobody has thought about cost.
-
-Baseline 1 is deterministic and recomputed on demand - it is free.
-
-Baseline 2 costs real tokens, and running it over the full batch would be
-spending exactly what the architecture exists to save, which would also make
-the comparison dishonest: "we avoided this cost" is not a claim you can support
-by paying the cost. So it runs once, over a fixed seeded subsample, and freezes
-to data/baselines/. It is never recomputed unless someone passes --force, and
-every number derived from it is labelled a subsample projection wherever it is
-displayed.
-"""
-
 from __future__ import annotations
 
 import json
@@ -38,14 +12,11 @@ from .matching import normalize_ref, records_from_rows
 
 BASELINE_DIR = Path(__file__).resolve().parents[1] / "data" / "baselines"
 
-# Big enough for the category mix to show up, small enough to cost one request.
+
 SUBSAMPLE_RECORDS = 40
 SUBSAMPLE_SEED = 4242
 
 
-# --------------------------------------------------------------------------
-# Shared scoring
-# --------------------------------------------------------------------------
 def _expected_pairs(truth: dict[str, Any]) -> set[tuple[str, str]]:
     out: set[tuple[str, str]] = set()
     for case in truth.get("cases", []):
@@ -72,22 +43,12 @@ def _score_pairs(proposed: set[tuple[str, str]],
     }
 
 
-# --------------------------------------------------------------------------
-# Baseline 1 - naive deterministic join. Free.
-# --------------------------------------------------------------------------
 def naive_join(ledger_rows: list[dict[str, Any]], bank_rows: list[dict[str, Any]],
                truth: dict[str, Any]) -> dict[str, Any]:
-    """Exact reference + exact amount, one row to one row, first come first served.
-
-    No fee awareness, no date window, no duplicate handling, no fuzzy matching,
-    no ambiguity check. This is the thing being replaced.
-    """
     t0 = time.perf_counter()
     ledger = records_from_rows(ledger_rows, "ledger")
     bank = records_from_rows(bank_rows, "bank")
 
-    # A real spreadsheet join reads the reference column and nothing else - it
-    # does not know references can hide in a narration, so neither does this.
     index: dict[tuple[str, int], list[str]] = {}
     for b in bank:
         raw = normalize_ref(b.reference_number) if b.ref_source == "column" else ""
@@ -125,9 +86,6 @@ def naive_join(ledger_rows: list[dict[str, Any]], bank_rows: list[dict[str, Any]
     return result
 
 
-# --------------------------------------------------------------------------
-# Baseline 2 - the model decides everything. Capped, frozen, never rerun.
-# --------------------------------------------------------------------------
 _BASELINE_SYSTEM = (
     "You reconcile a merchant ledger against a bank statement for an Indian payments "
     "desk. Amounts are INR.\n"
@@ -158,12 +116,6 @@ _BASELINE_SCHEMA = {
 
 def _subsample(ledger_rows: list[dict[str, Any]], bank_rows: list[dict[str, Any]],
                truth: dict[str, Any], size: int) -> tuple[list[Any], list[Any], set[tuple[str, str]]]:
-    """A seeded slice of whole cases, so the flaw mix survives the sampling.
-
-    Sampling loose records would break pairs across the boundary and score the
-    model for failing to find a row that was never in the prompt. Whole cases
-    keep both halves together.
-    """
     rng = random.Random(SUBSAMPLE_SEED)
     cases = list(truth.get("cases", []))
     rng.shuffle(cases)
@@ -220,13 +172,6 @@ def load_llm_only(profile: str) -> dict[str, Any] | None:
 def run_llm_only(profile: str, ledger_rows: list[dict[str, Any]],
                  bank_rows: list[dict[str, Any]], truth: dict[str, Any],
                  force: bool = False, size: int = SUBSAMPLE_RECORDS) -> dict[str, Any]:
-    """Measure the LLM-only baseline once and freeze it.
-
-    Returns the frozen result untouched unless force=True. This function is the
-    only place in the repo that will spend tokens on something other than a real
-    exception, and it is deliberately awkward to trigger: nothing calls it on a
-    request path, only scripts/baseline.py does.
-    """
     existing = load_llm_only(profile)
     if existing and not force:
         return existing
@@ -244,9 +189,6 @@ def run_llm_only(profile: str, ledger_rows: list[dict[str, Any]],
     error = None
 
     if llm.use_mock():
-        # The mock cannot do this task - it classifies exceptions, it does not
-        # match a book. Refusing is the correct answer; a fabricated baseline
-        # would be worse than none.
         error = "USE_MOCK_LLM is on. The LLM-only baseline needs the real model to mean anything."
     else:
         key = llm.api_key()
@@ -258,11 +200,7 @@ def run_llm_only(profile: str, ledger_rows: list[dict[str, Any]],
                 body = {
                     "model": model,
                     "temperature": 0.0,
-                    # One pair is ~18 tokens, but gpt-oss spends reasoning
-                    # tokens against the same budget before it emits any JSON.
-                    # Sized too tightly the first time and the reply came back
-                    # truncated, which Groq reports as a schema failure with an
-                    # empty completion rather than as a length error.
+
                     "max_tokens": min(4000, 40 * len(ledger) + 1200),
                     "reasoning_effort": "low",
                     "messages": [
@@ -287,7 +225,7 @@ def run_llm_only(profile: str, ledger_rows: list[dict[str, Any]],
                     l_id, b_id = str(pair.get("l", "")), str(pair.get("b", ""))
                     if l_id and b_id:
                         proposed.add((l_id, b_id))
-            except Exception as exc:                  # noqa: BLE001
+            except Exception as exc:
                 error = str(exc)[:300]
 
     wall = time.perf_counter() - t0
@@ -322,8 +260,6 @@ def run_llm_only(profile: str, ledger_rows: list[dict[str, Any]],
     }
 
     if error:
-        # Do not freeze a failure. A poisoned baseline file would answer "the
-        # model scored zero" forever, which is a claim we would not have earned.
         return result
     BASELINE_DIR.mkdir(parents=True, exist_ok=True)
     baseline_path(profile).write_text(json.dumps(result, indent=1), encoding="utf-8")
@@ -332,7 +268,6 @@ def run_llm_only(profile: str, ledger_rows: list[dict[str, Any]],
 
 def bundle(profile: str, ledger_rows: list[dict[str, Any]], bank_rows: list[dict[str, Any]],
            truth: dict[str, Any] | None) -> dict[str, Any] | None:
-    """Both baselines for the comparison panel. Never triggers a live call."""
     if truth is None:
         return None
     return {

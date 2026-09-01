@@ -5,17 +5,6 @@ import { api } from '../lib/api'
 import { humanise, money, shortDate } from '../lib/format'
 import { Pulse, SidePanel, Tag } from './bits'
 
-/* ==========================================================================
-   Why is this pair matched?
-
-   Click any row on the canvas and this answers it: which pass caught it, what
-   that rule asserts, which conditions it had to satisfy, and the actual numbers
-   it satisfied them with. Plus which passes looked at the record first and
-   declined it, because "pass 1 and 2 both said no" is part of the answer.
-
-   Nothing here is reconstructed. Every field was recorded by the engine at the
-   moment the rule fired.
-   ========================================================================== */
 
 const OUTCOME: Record<string, { label: string; tone: 'pine' | 'ochre' | 'oxblood' | 'slate' }> = {
   auto_resolved: { label: 'Resolved by rule', tone: 'pine' },
@@ -95,7 +84,6 @@ export function ProvenancePanel({
             )}
           </div>
 
-          {/* the record itself */}
           <div className="border-b border-rule px-3 py-2.5">
             <div className="label mb-1.5">This record</div>
             <RecordCard r={data.record} />
@@ -114,7 +102,6 @@ export function ProvenancePanel({
             </div>
           )}
 
-          {/* what the rule required, against what this pair had */}
           {data.rule && (
             <div className="border-b border-rule px-3 py-2.5">
               <div className="label mb-1.5">What the rule required</div>
@@ -186,10 +173,7 @@ export function ProvenancePanel({
               {data.exception.llm && (
                 <div className="mt-2 rounded-[2px] border border-rule bg-field/50 p-2">
                   <div className="label mb-1 flex items-center gap-1.5">
-                    <span>The model</span>
-                    <span className="num text-[9px] normal-case text-mute">
-                      {data.exception.llm.model}
-                    </span>
+                    <span>The assistant</span>
                     {data.exception.llm.source === 'mock' && <Tag tone="ochre">stand-in</Tag>}
                     {data.exception.llm.cached && <Tag tone="slate">cached</Tag>}
                   </div>

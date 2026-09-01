@@ -1,5 +1,3 @@
-/* Typed client for the FastAPI backend. */
-
 export type PassStat = {
   name: string
   label: string
@@ -34,11 +32,7 @@ export type Summary = {
   value_auto_resolved: number
   value_rate_auto: number
   exceptions_total: number
-  /** Records covered by those exception groups - a different unit from
-   *  exceptions_total, and never part of the auto/proposed/unresolved split.
-   *  Optional: runs stored before schema v2 do not carry it. */
   exception_records?: number
-  /** Records counted in two buckets at once. 0 unless the engine has a bug. */
   accounting_overlap?: number
   exceptions_by_kind: Record<string, number>
   exceptions_needing_llm: number
@@ -96,7 +90,6 @@ export type CacheStats = {
   prompt_version: string
 }
 
-/* --------------------------------------------------------- phase 2 types */
 
 export type ConfusionCategory = {
   category: string
@@ -201,8 +194,6 @@ export type HoursSaved = {
   note: string
 }
 
-/** What GET /runs/{id}/cost returns. Named so components can take it as a
- *  prop instead of restating the inline shape at every call site. */
 export type CostResponse = {
   run_id: string
   split: CostSplit
@@ -515,7 +506,6 @@ async function req<T>(path: string, init?: RequestInit): Promise<T> {
       const body = await res.json()
       detail = typeof body.detail === 'string' ? body.detail : JSON.stringify(body.detail)
     } catch {
-      /* keep statusText */
     }
     throw new ApiError(detail, res.status)
   }
@@ -545,7 +535,6 @@ export const api = {
       { method: 'POST' },
     ),
 
-  /** Answers "what would this cost" without spending anything. */
   explainDryRun: (runId: string) =>
     req<ExplainDryRun>(`/runs/${runId}/explain?dry_run=true`, { method: 'POST' }),
 
@@ -563,7 +552,6 @@ export const api = {
 
   thresholds: () => req<ThresholdInfo>('/thresholds'),
 
-  /** Deterministic re-run at new tolerances. Never calls the model. */
   previewThresholds: (runId: string, overrides: Record<string, number>) =>
     req<ThresholdPreview>(`/runs/${runId}/thresholds`, {
       method: 'POST',

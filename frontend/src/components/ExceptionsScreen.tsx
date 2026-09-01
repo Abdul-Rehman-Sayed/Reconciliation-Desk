@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import type { ReactNode } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react'
+import { Check, ChevronLeft, ChevronRight, HelpCircle, Sparkles, X } from 'lucide-react'
 import type { ExceptionPage, ExceptionRow, Summary } from '../lib/api'
 import { api } from '../lib/api'
 import {
@@ -66,9 +67,10 @@ export function ExceptionsScreen({
     void load()
   }, [load])
 
-  useEffect(() => {
+  const onFilter = (set: (v: string) => void) => (v: string) => {
+    set(v)
     setPage(1)
-  }, [kind, status, action, maxConfidence])
+  }
 
   const act = async (exceptionId: string, verdict: string) => {
     setBusy(true)
@@ -119,13 +121,13 @@ export function ExceptionsScreen({
       <div className="mb-3 grid grid-cols-2 items-center gap-2 sm:flex sm:flex-wrap">
         <Select
           value={kind}
-          onChange={setKind}
+          onChange={onFilter(setKind)}
           placeholder="All types"
           options={Object.entries(facets?.kind ?? {}).map(([k, n]) => [k, `${humanise(k)} (${n})`])}
         />
         <Select
           value={action}
-          onChange={setAction}
+          onChange={onFilter(setAction)}
           placeholder="Any suggestion"
           options={Object.entries(facets?.suggested_action ?? {}).map(([k, n]) => [
             k,
@@ -134,7 +136,7 @@ export function ExceptionsScreen({
         />
         <Select
           value={status}
-          onChange={setStatus}
+          onChange={onFilter(setStatus)}
           placeholder="Any state"
           options={Object.entries(facets?.status ?? {}).map(([k, n]) => [
             k,
@@ -143,7 +145,7 @@ export function ExceptionsScreen({
         />
         <Select
           value={maxConfidence}
-          onChange={setMaxConfidence}
+          onChange={onFilter(setMaxConfidence)}
           placeholder="Any confidence"
           options={[
             ['0.5', 'Below 0.50'],
@@ -177,10 +179,7 @@ export function ExceptionsScreen({
       )}
 
       <div className={`grid gap-4 ${selected ? 'lg:grid-cols-[minmax(0,1fr)_400px]' : ''}`}>
-        {/* Below lg the detail is a drawer over the list, so the list keeps the
-            full width and does not get squeezed to a column that is not there. */}
         <div className="sheet overflow-hidden">
-          {/* Column heads only make sense once the row is actually columnar. */}
           <div className="hidden grid-cols-[108px_1fr_130px_92px] gap-2 border-b border-rule px-3 py-1.5 md:grid">
             <span className="label">Type</span>
             <span className="label">What happened</span>
@@ -309,7 +308,6 @@ function ExceptionRowView({
         <div className="num text-[9px] text-mute md:mt-1">{row.exception_id}</div>
       </div>
 
-      {/* On mobile the state/actions column rides up beside the type tag. */}
       <div className="row-start-1 flex flex-col items-end gap-1 md:col-start-4 md:row-auto">
         {decided ? (
           <motion.div
@@ -321,12 +319,12 @@ function ExceptionRowView({
           </motion.div>
         ) : (
           <div className="flex gap-1">
-            <MiniBtn label="✓" title="Approve" id={row.exception_id} tone="pine"
-                     onClick={() => onAct('approve')} busy={busy} />
-            <MiniBtn label="✕" title="Reject" id={row.exception_id} tone="oxblood"
-                     onClick={() => onAct('reject')} busy={busy} />
-            <MiniBtn label="?" title="Investigate" id={row.exception_id} tone="ochre"
-                     onClick={() => onAct('investigate')} busy={busy} />
+            <MiniBtn icon={<Check size={12} />} title="Approve" id={row.exception_id}
+                     tone="pine" onClick={() => onAct('approve')} busy={busy} />
+            <MiniBtn icon={<X size={12} />} title="Reject" id={row.exception_id}
+                     tone="oxblood" onClick={() => onAct('reject')} busy={busy} />
+            <MiniBtn icon={<HelpCircle size={12} />} title="Investigate" id={row.exception_id}
+                     tone="ochre" onClick={() => onAct('investigate')} busy={busy} />
           </div>
         )}
       </div>
@@ -369,17 +367,15 @@ function ExceptionRowView({
 }
 
 function MiniBtn({
-  label,
+  icon,
   title,
   id,
   tone,
   onClick,
   busy,
 }: {
-  label: string
+  icon: ReactNode
   title: string
-  /** Every row carries the same three verbs, so the exception id has to be part
-   *  of the accessible name or a screen reader hears "Investigate" 20 times. */
   id: string
   tone: 'pine' | 'oxblood' | 'ochre'
   onClick: () => void
@@ -397,9 +393,9 @@ function MiniBtn({
       aria-label={`${title} ${id}`}
       onClick={onClick}
       disabled={busy}
-      className={`h-6 w-6 rounded-[2px] border bg-sheet text-[11px] leading-none transition-colors disabled:opacity-40 ${styles[tone]}`}
+      className={`flex h-6 w-6 items-center justify-center rounded-[2px] border bg-sheet transition-colors disabled:opacity-40 ${styles[tone]}`}
     >
-      {label}
+      {icon}
     </button>
   )
 }
