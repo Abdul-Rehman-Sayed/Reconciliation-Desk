@@ -7,7 +7,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from app.matching import (  # noqa: E402
+from app.matching import (
     AUTO_RESOLVE_FLOOR,
     Engine,
     normalize_ref,

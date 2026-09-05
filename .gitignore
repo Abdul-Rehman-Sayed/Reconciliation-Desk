@@ -9,16 +9,8 @@ venv/
 
 backend/data/runs/
 
-# Machine-local state
 backend/data/llm_budget.json
 backend/data/llm_cache_mock.json
-
-# NOT ignored, deliberately:
-#   backend/data/llm_cache.json   - real Groq verdicts, paid for once. Committing it
-#                                   means a fresh clone runs the demo at zero cost.
-#                                   It holds model output, no keys.
-#   backend/data/baselines/       - the frozen LLM-only measurement. Recomputing it
-#                                   would spend tokens to re-derive a fixed number.
 
 # Node
 node_modules/
@@ -28,6 +20,3 @@ dist/
 # OS
 .DS_Store
 Thumbs.db
-
-working.md
-pitch.md

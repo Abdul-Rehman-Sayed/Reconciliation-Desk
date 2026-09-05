@@ -8,10 +8,10 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from app import analytics, audit, baselines, llm, mockllm  # noqa: E402
-from app.adapters import razorpay  # noqa: E402
-from app.dataio import load_bundled, load_ground_truth  # noqa: E402
-from app.matching import (  # noqa: E402
+from app import analytics, audit, baselines, llm, mockllm
+from app.adapters import razorpay
+from app.dataio import load_bundled, load_ground_truth
+from app.matching import (
     ADJUSTABLE_THRESHOLDS,
     DEFAULT_THRESHOLDS,
     Thresholds,
