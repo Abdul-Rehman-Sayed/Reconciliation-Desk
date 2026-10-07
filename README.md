@@ -1,6 +1,6 @@
 # Reconciliation Desk
 
-**AI Finance Controller — Reconciliation Agent · Razorpay AI Buildathon 2026, Track 04**
+**AI Finance Controller — Reconciliation Agent**
 
 ---
 
